@@ -6,15 +6,37 @@
 Welcome to PySAN's documentation!
 =================================
 
+PySAN is a library of methods for social sequence analysis using Python.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   api_reference
 
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+User Guide
+===============
+PySAN revolves around analysing sequences, which can be represented in Python using lists (comma seperated values inside square brackets);
+
+.. ipython:: python
+
+	sequence = [0,1,1,2,3,1,3]
+
+	print(sequence)
+
+
+
+.. ipython:: python
+
+	import pysan as ps
+
+	@savefig basic_sequence.png
+	ps.plot_sequence(sequence)
+
+
+.. ipython:: python
+	
+	ps.describe(sequence)
+

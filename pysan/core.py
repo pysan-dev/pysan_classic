@@ -54,4 +54,12 @@ def get_ngram_universe(sequence, n):
     return k**n
 
 
-
+def describe(sequence):
+    """
+    Prints useful descriptive details of a given sequence to the console.
+    """
+    print('length:', len(sequence))
+    print('alphabet:', get_alphabet(sequence))
+    print('sequence universe:', get_ngram_universe(sequence, len(sequence)))
+    print('bigrams:', get_ngrams(sequence, 2))
+    print('bigram universe:', get_ngram_universe(sequence, 2))
