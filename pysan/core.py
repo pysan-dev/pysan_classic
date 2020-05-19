@@ -53,9 +53,7 @@ def get_ngram_universe(sequence, n):
         return 'really big'
     return k**n
 
-def get_element_prevalence(sequence):
-    elements = get_alphabet(sequence)
-    
+
 
 def describe(sequence):
     """
