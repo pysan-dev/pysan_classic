@@ -53,6 +53,9 @@ def get_ngram_universe(sequence, n):
         return 'really big'
     return k**n
 
+def get_element_prevalence(sequence):
+    elements = get_alphabet(sequence)
+    
 
 def describe(sequence):
     """
@@ -60,6 +63,15 @@ def describe(sequence):
     """
     print('length:', len(sequence))
     print('alphabet:', get_alphabet(sequence))
-    print('sequence universe:', get_ngram_universe(sequence, len(sequence)))
+    print('sequence universe:', f'{get_ngram_universe(sequence, len(sequence)):,}')
     print('bigrams:', get_ngrams(sequence, 2))
     print('bigram universe:', get_ngram_universe(sequence, 2))
+
+    details = {
+    'length': len(sequence),
+    'alphabet': get_alphabet(sequence),
+    'sequence_universe': get_ngram_universe(sequence, len(sequence)),
+    'bigrams': get_ngrams(sequence, 2),
+    'bigram_universe' : get_ngram_universe(sequence, 2)
+    }
+    return details
