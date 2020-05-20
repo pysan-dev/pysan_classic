@@ -44,10 +44,24 @@ extensions = [
     'sphinx.ext.extlinks',
     'sphinxcontrib.napoleon',
     'sphinx_automodapi.automodapi',
+    'matplotlib.sphinxext.plot_directive',
     #'sphinx_gallery.gen_gallery',
     'IPython.sphinxext.ipython_console_highlighting',
     'IPython.sphinxext.ipython_directive'
 ]
+
+plot_include_source = True
+plot_pre_code = '''
+import sys
+sys.path.append('../../')
+import pysan as ps
+'''
+doctest_test_doctest_blocks = 'nonemptystring'
+doctest_global_setup = '''
+import sys
+sys.path.append('../../')
+import pysan as ps
+'''
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -57,15 +71,17 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
-import sphinx_bootstrap_theme
-
+from better import better_theme_path
+html_theme_path = [better_theme_path]
+html_theme = 'better'
+html_theme_options = {}
+html_theme_options['cssfiles'] = ['_static/style.css']
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'bootstrap'
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".

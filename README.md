@@ -6,6 +6,7 @@ PySAN is a library of methods for performing basic social sequence analysis usin
 - basic visualisation of a sequence
 - computation of sequence alphabets and ngrams
 - calculations of ngram and sequence universes
+- transition matrix calculations and plots
 - more coming soon
 
 ## Why PySAN
