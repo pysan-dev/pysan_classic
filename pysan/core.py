@@ -165,12 +165,14 @@ def get_transition_matrix(sequence):
 	all_ngrams = get_all_ngrams(sequence, 2)
 	
 	transition_matrix = np.zeros((len(alphabet), len(alphabet)))
+	descriptive_matrix = np.zeros((len(alphabet), len(alphabet)))
 	
 	for x, element_row in enumerate(alphabet):
 		for y, element_column in enumerate(alphabet):
 			current_ngram = [element_row, element_column]
+			descriptive_matrix[x,y] = str(current_ngram)
 			#print('from', current_ngram[0], 'to', current_ngram[1], ':', all_ngrams.count(current_ngram))
-			transition_matrix[y, x] = all_ngrams.count(current_ngram)
+			transition_matrix[x, y] = all_ngrams.count(current_ngram)
 			
 	tm_df = pd.DataFrame(transition_matrix, columns=alphabet, index=alphabet)
 	return tm_df
