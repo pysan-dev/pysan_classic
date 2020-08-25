@@ -19,6 +19,8 @@ help:
 
 %: Makefile
 
-	pip install --upgrade --force-reinstall ../pysan
+	#pip install --upgrade --force-reinstall ../pysan
+
+	rm -rf `find -type d -name .ipynb_checkpoints`
 
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

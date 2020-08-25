@@ -25,7 +25,7 @@ copyright = '2020, Oliver J. Scholten'
 author = 'Oliver J. Scholten'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0a'
+release = '0.1'
 
 
 # -- General configuration ---------------------------------------------------

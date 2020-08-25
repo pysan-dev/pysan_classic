@@ -124,7 +124,7 @@ def describe(sequence):
 
 def get_element_prevalence(sequence):
     
-    elements = ps.get_alphabet(sequence)
+    elements = get_alphabet(sequence)
     
     prevalences = {}
     for element in elements:
