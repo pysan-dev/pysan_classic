@@ -12,4 +12,23 @@
 	</div>
 </div>
 
+<script type="text/javascript">
+	
+
+
+	document.addEventListener("DOMContentLoaded", function(event) {
+
+		all_pres = document.getElementsByClassName('gp');
+
+		console.log(all_pres);
+
+		for(i=0; i<all_pres.length; i++){
+			all_pres[i].innerHTML = all_pres[i].innerHTML.substring(3, all_pres[i].innerHTML.length);
+		}
+
+
+	});
+
+</script>
+
 {% endblock %}

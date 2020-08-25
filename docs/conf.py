@@ -71,6 +71,8 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+add_module_names = False
+
 from better import better_theme_path
 html_theme_path = [better_theme_path]
 html_theme = 'better'
@@ -86,3 +88,5 @@ html_theme_options['cssfiles'] = ['_static/style.css']
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_title='pysan documentation'

@@ -10,5 +10,5 @@ PySAN is a library of methods for performing basic social sequence analysis usin
 - more coming soon
 
 ## Why PySAN
-PySAN was created as a hobbyist project by [Oliver Scholten](https://twitter.com/ojscholten) after reading *Social Sequence Analysis: Methods and Applications* by *Benjamin Cornwell*. It's not meant as a state of the art scientific package, but more of a reliable workhorse for preliminary investigations and small projects.
+PySAN was created as a hobbyist project by [Oliver Scholten](https://twitter.com/ojscholten) after reading *[Social Sequence Analysis: Methods and Applications* by *Benjamin Cornwell](https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88)*. It's not meant as a state of the art scientific package, but more of a reliable workhorse for preliminary investigations and small projects.
 

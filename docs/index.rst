@@ -22,25 +22,34 @@ User Guide
 ===============
 PySAN revolves around analysing sequences, which can be represented in Python using lists (comma seperated values inside square brackets);
 
->>> import pysan as ps
+.. ipython:: python
+
+	import pysan as ps
 
 
 
->>> sequence = [0,1,1,2,3,1,3]
->>> print(sequence)
-[0, 1, 1, 2, 3, 1, 3]
+.. ipython:: python
+
+	sequence = [0,1,1,2,3,1,3]
+	print(sequence)
 
 
-.. plot::
 
-	>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,3,3,2,1,1,2]
-	>>> ps.plot_sequence(sequence)
+.. ipython:: python
+
+	sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,3,3,2,1,1,2]
+	@savefig plot_sequence.png width=4in
+	plot = ps.plot_sequence(sequence)
 
 
 You can get descriptive information on sequence using the `describe` method;
 
->>> ps.describe(sequence) # doctest: +ELIPSIS
-...
+.. ipython:: python
+
+	ps.describe(sequence)
+
+
+
 
 
 API Reference

@@ -57,9 +57,10 @@ def get_alphabet(sequence):
 
 	Example
 	----------
-	>>> sequence = [1,1,2,1,2,2,3,4,2]
-	>>> ps.get_alphabet(sequence)
-	{1, 2, 3, 4}
+	.. ipython:: python
+
+		sequence = [1,1,2,1,2,2,3,4,2]
+		ps.get_alphabet(sequence)
 
 	"""
 	return set(sequence)
