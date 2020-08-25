@@ -35,6 +35,10 @@ h3.subtitle{
 	font-size: 14px;
 }
 
+.section{
+	margin-bottom: 50px;
+}
+
 nav#breadcrumbs{
     display:none;
 }

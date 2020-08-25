@@ -57,10 +57,9 @@ def get_alphabet(sequence):
 
 	Example
 	----------
-	.. ipython:: python
 
-		sequence = [1,1,2,1,2,2,3,4,2]
-		ps.get_alphabet(sequence)
+	>>> sequence = [1,1,2,1,2,2,3,4,2]
+	>>> ps.get_alphabet(sequence)
 
 	"""
 	return set(sequence)
@@ -106,14 +105,15 @@ def get_ngram_universe(sequence, n):
 
 def describe(sequence):
 	"""
-	Prints useful descriptive details of a given sequence to the console.
-	"""
-	print('length:', len(sequence))
-	print('alphabet:', get_alphabet(sequence))
-	print('sequence universe:', f'{get_ngram_universe(sequence, len(sequence)):,}')
-	print('unique bigrams:', get_unique_ngrams(sequence, 2))
-	print('bigram universe:', get_ngram_universe(sequence, 2))
+	Computes descriptive properties of a given sequence, returning a dictionary containing the keys: 
+	{'length','alphabet','sequence_universe','unique_bigrams','bigram_universe'}.
 
+	Example
+	---------
+	>>> sequence = [1,1,2,1,2,2,3,4,2]
+	>>> ps.describe(sequence)
+
+	"""
 	details = {
 	'length': len(sequence),
 	'alphabet': get_alphabet(sequence),
@@ -152,7 +152,7 @@ def get_transition_matrix(sequence):
 	The resulting matrix can be interpreted by reading along the top row first, then down the side, indicating from the element in the top row to the element along the side.
 	For example, to find the number of transitions from element 2 to element 3, find element 2 across the top, then follow that column down until it reaches element 3 on the side.
 
-	Examples
+	Example
 	----------
 	>>> sequence = ['cook','exercise','sleep','sleep','cook','exercise','sleep']
 	>>> ps.get_transition_matrix(sequence)

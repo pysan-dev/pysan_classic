@@ -23,7 +23,9 @@
 		console.log(all_pres);
 
 		for(i=0; i<all_pres.length; i++){
-			all_pres[i].innerHTML = all_pres[i].innerHTML.substring(3, all_pres[i].innerHTML.length);
+			if(all_pres[i].innerHTML.substring(0, 3) == 'In '){
+				all_pres[i].innerHTML = all_pres[i].innerHTML.substring(3, all_pres[i].innerHTML.length);
+			}
 		}
 
 
