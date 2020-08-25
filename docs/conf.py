@@ -20,7 +20,7 @@ sys.path.append(os.getcwd()[:-5])
 
 # -- Project information -----------------------------------------------------
 
-project = 'PySAN'
+project = 'pysan'
 copyright = '2020, Oliver J. Scholten'
 author = 'Oliver J. Scholten'
 

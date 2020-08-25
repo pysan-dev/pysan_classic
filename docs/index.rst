@@ -35,7 +35,7 @@ User Guide
 	import pysan as ps
 
 Loading Sequence Data
-========================
+-----------------------
 
 .. ipython:: python
 
@@ -43,6 +43,14 @@ Loading Sequence Data
 	print(sequence)
 
 
+You can get descriptive information on sequence using the `describe` method;
+
+.. ipython:: python
+
+	ps.describe(sequence)
+
+Basic Visualisation
+----------------------
 
 .. ipython:: python
 
@@ -51,11 +59,14 @@ Loading Sequence Data
 	plot = ps.plot_sequence(sequence)
 
 
-You can get descriptive information on sequence using the `describe` method;
+Understanding Subsequences
+----------------------------
 
-.. ipython:: python
 
-	ps.describe(sequence)
+Make a Transition Matrix
+---------------------------
+
+
 
 
 
