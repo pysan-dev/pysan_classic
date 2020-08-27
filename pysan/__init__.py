@@ -5,6 +5,7 @@ from pysan.core import(
 	describe,
     plot_sequence,
     get_alphabet,
+    get_element_prevalence,
     get_all_ngrams,
     get_unique_ngrams,
     get_ngram_universe,

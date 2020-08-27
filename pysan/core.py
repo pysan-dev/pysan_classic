@@ -5,15 +5,15 @@ import random
 
 
 def generate_sequence(length, alphabet):
-    """
-    Generates a random sequence of a given length, given an alphabet of elements.
-    This is useful for benchmarking function performance, and creating examples in the docs.
-    
-    Example
-    --------
-    >>> ps.generate_sequence(12, [1,2,3])
-    """
-    return [random.choice(alphabet) for x in range(length)]
+	"""
+	Generates a random sequence of a given length, given an alphabet of elements.
+	This is useful for benchmarking function performance, and creating examples in the docs.
+	
+	Example
+	--------
+	>>> ps.generate_sequence(12, [1,2,3])
+	"""
+	return [random.choice(alphabet) for x in range(length)]
 
 
 def plot_sequence(sequence):
@@ -124,35 +124,35 @@ def describe(sequence):
 	return details
 
 def get_element_prevalence(sequence):
-    
-    elements = get_alphabet(sequence)
-    
-    prevalences = {}
-    for element in elements:
-        prevalences[element] = sequence.count(element)
-        
-    return prevalences
+	
+	elements = get_alphabet(sequence)
+	
+	prevalences = {}
+	for element in elements:
+		prevalences[element] = sequence.count(element)
+		
+	return prevalences
 
 def get_element_frequency(sequence):
-    """
-    Computes the relative frequency of each element in a sequence, returning a dictionary where each key is an element and each value is that elements relative frequency.
-    """
-    
-    elements = ps.get_alphabet(sequence)
-    
-    prevalences = {}
-    for element in elements:
-        prevalences[element] = sequence.count(element) / len(sequence)
-        
-    return prevalences
+	"""
+	Computes the relative frequency of each element in a sequence, returning a dictionary where each key is an element and each value is that elements relative frequency.
+	"""
+	
+	elements = ps.get_alphabet(sequence)
+	
+	prevalences = {}
+	for element in elements:
+		prevalences[element] = sequence.count(element) / len(sequence)
+		
+	return prevalences
 
-def get_transition_matrix(sequence):
+def get_transition_matrix(sequence, alphabet=None, verbose=False):
 	"""
 	Computes a transition matrix for each bigram in a sequence.
-	The resulting matrix can be interpreted by reading along the top row first, then down the side, indicating from the element in the top row to the element along the side.
-	For example, to find the number of transitions from element 2 to element 3, find element 2 across the top, then follow that column down until it reaches element 3 on the side.
+	The resulting matrix can be interpreted by reading along the side first, then across the top, indicating from the element in down the side to the element along the top.
+	For example, to find the number of transitions from element 2 to element 3, find element 2 down the side, then follow that row across until it reaches element 3 across the top.
 
-	Example
+	Examples
 	----------
 	>>> sequence = ['cook','exercise','sleep','sleep','cook','exercise','sleep']
 	>>> ps.get_transition_matrix(sequence)
@@ -162,19 +162,24 @@ def get_transition_matrix(sequence):
 	sleep      0.0       1.0    1.0
 
 	"""
-	alphabet = get_alphabet(sequence)
+	if alphabet == None:
+		alphabet = get_alphabet(sequence)
 	all_ngrams = get_all_ngrams(sequence, 2)
-	
+
 	transition_matrix = np.zeros((len(alphabet), len(alphabet)))
-	descriptive_matrix = np.zeros((len(alphabet), len(alphabet)))
-	
+	descriptive_matrix = [['-' for x in range(len(alphabet))] for y in range(len(alphabet))]
+
 	for x, element_row in enumerate(alphabet):
 		for y, element_column in enumerate(alphabet):
 			current_ngram = [element_row, element_column]
-			descriptive_matrix[x,y] = str(current_ngram)
+			descriptive_matrix[x][y] = 'n' + str(current_ngram)
 			#print('from', current_ngram[0], 'to', current_ngram[1], ':', all_ngrams.count(current_ngram))
 			transition_matrix[x, y] = all_ngrams.count(current_ngram)
-			
+
+	if verbose:
+		de_df = pd.DataFrame(descriptive_matrix, columns=alphabet, index=alphabet)
+		print(de_df)
 	tm_df = pd.DataFrame(transition_matrix, columns=alphabet, index=alphabet)
 	return tm_df
 
+print('pysan ready')
