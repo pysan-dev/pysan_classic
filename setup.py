@@ -17,5 +17,9 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
+    install_requires=[
+        "pandas >= 1.0.3",
+        "matplotlib >= 3.2.1",
+    ],
     python_requires='>=3.6',
 )

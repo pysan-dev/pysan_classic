@@ -5,6 +5,13 @@ code.sig-name.descname{
 	font-weight: bold;
 	font-size: 130%;
 }
+code.py{
+
+	font-weight: bold;
+	font-size: 130%;
+	margin-right: 4px;
+
+}
 body{
 	margin-top: 0;
 }

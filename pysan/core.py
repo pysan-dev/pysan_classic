@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import random
-
+import random, copy
+import matplotlib.cm as cm
 
 def generate_sequence(length, alphabet):
 	"""
@@ -15,36 +15,6 @@ def generate_sequence(length, alphabet):
 	"""
 	return [random.choice(alphabet) for x in range(length)]
 
-
-def plot_sequence(sequence):
-	"""
-	Creates a standard sequence plot where each element corresponds to a position on the y-axis.
-	
-
-	Example
-	----------
-	.. plot::
-
-		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
-		>>> ps.plot_sequence(sequence)
-
-	"""
-	np_sequence = np.array(sequence)
-	alphabet_len = len(get_alphabet(sequence))
-	
-	plt.figure(figsize=[len(sequence)*0.2,alphabet_len * 0.25])
-		
-	unique_values = list(set(sequence))
-	for i, value in enumerate(unique_values):
-		
-		points = np.where(np_sequence == value, i, np.nan)
-		
-		plt.scatter(x=range(len(np_sequence)), y=points, marker='s', label=value)
-	
-	plt.yticks(range(len(unique_values)), unique_values)
-	plt.ylim(-1, len(unique_values))
-	
-	return plt
 
 def get_alphabet(sequence):
 	"""
@@ -101,6 +71,28 @@ def get_ngram_universe(sequence, n):
 		return 'really big'
 	return k**n
 
+def get_ngram_prevalence(sequence, n):
+	"""
+	Computes the prevalence of ngrams in a sequence, returning a dictionary where each key is an ngram, and each value is the number of times that ngram appears in the sequence.
+	
+	Parameters
+	-------------
+	sequence : list(int)
+		A sequence of elements, encoded as integers e.g. [1,3,2,1].
+	n: int
+		The number of elements in the ngrams to extract.
+	
+	"""
+	
+	ngrams = get_unique_ngrams(sequence, n)
+	
+	ngram_prevalence = {str(i):0 for i in ngrams}    
+	
+	for x in range(len(sequence) -  n):
+		this_ngram = sequence[x:x + n]
+		ngram_prevalence[str(this_ngram)] += 1
+	
+	return ngram_prevalence
 
 
 def describe(sequence):
@@ -118,7 +110,7 @@ def describe(sequence):
 	'length': len(sequence),
 	'alphabet': get_alphabet(sequence),
 	'sequence_universe': get_ngram_universe(sequence, len(sequence)),
-	'unique_bigrams': get_unique_ngrams(sequence, 2),
+	'unique_bigrams': len(get_unique_ngrams(sequence, 2)),
 	'bigram_universe' : get_ngram_universe(sequence, 2)
 	}
 	return details
@@ -182,4 +174,137 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 	tm_df = pd.DataFrame(transition_matrix, columns=alphabet, index=alphabet)
 	return tm_df
 
+
+
+
+
+
+
+
+# ====================================================================================
+# PLOTTING FUNCTIONS
+# ====================================================================================
+
+
+def plot_sequence(sequence):
+	"""
+	Creates a standard sequence plot where each element corresponds to a position on the y-axis.
+	
+
+	Example
+	----------
+	.. plot::
+
+		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
+		>>> ps.plot_sequence(sequence)
+
+	"""
+	np_sequence = np.array(sequence)
+	alphabet_len = len(get_alphabet(sequence))
+	
+	plt.figure(figsize=[len(sequence)*0.2,alphabet_len * 0.25])
+		
+	unique_values = list(set(sequence))
+	for i, value in enumerate(unique_values):
+		
+		points = np.where(np_sequence == value, i, np.nan)
+		
+		plt.scatter(x=range(len(np_sequence)), y=points, marker='s', label=value)
+	
+	plt.yticks(range(len(unique_values)), unique_values)
+	plt.ylim(-1, len(unique_values))
+	
+	return plt
+
+
+def plot_element_prevalence(sequence):
+	"""
+	Plots the number of occurances of each unique element in a given sequence.
+
+	"""
+	
+	prev = get_element_prevalence(sequence)
+	prev = {k: prev[k] for k in sorted(prev, key=prev.get)}
+
+	xdata = [str(key) for key,value in prev.items()]
+	ydata = [value for key,value in prev.items()]
+	
+	plt.figure()
+	plt.barh(xdata, ydata, label='element count')
+	plt.gca().yaxis.grid(False)
+	plt.legend()
+	return plt
+
+	
+def plot_ngram_prevalence(sequence, n):
+	"""
+	Plots the number of occurances of ngrams in a given sequence.
+
+	"""
+	
+	ngram_prevalence = get_ngram_prevalence(sequence, n)
+	ngram_prevalence = {k: ngram_prevalence[k] for k in sorted(ngram_prevalence, key=ngram_prevalence.get)}
+	
+	xdata = [key[1:len(key)-1].replace(', ', ', ') for key,value in ngram_prevalence.items()]
+	ydata = [value for key,value in ngram_prevalence.items()]
+	
+	plt.figure()
+	plt.barh(xdata, ydata, label=str(n) +'-gram')
+	plt.gca().yaxis.grid(False)
+	plt.legend()
+	return plt
+
+
+def color_matrix(matrix, cmap='summer'):
+	"""
+	Creates a shaded matrix based on the values in that matrix. This is most useful when given a transition matrix as it intuitively plots the prevalence of transitions between states. The y axis represents the elements at position n, and the x axis represents the elements at position n+1.
+
+	Parameters
+	-----------
+	matrix: DataFrame
+		A 2D matrix of values in the form of a pandas dataframe. Column names are used as axis ticks.
+	cmap: string
+		The name of a `matplotlib color map <https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html>`_.
+	
+	"""
+
+
+	results_size = len(matrix.columns)
+	values = np.empty((results_size, results_size), dtype=object)
+	for r, row in enumerate(matrix.values):
+		for e, element in enumerate(row):
+			if element == "-":
+				values[r, e] = 100
+				continue
+			if element == "":
+				values[r, e] = np.nan
+				continue
+			if "*" in str(element):
+				value = element.replace("*", "")
+				values[r, e] = float(value)
+			else:
+				values[r, e] = element
+
+	current_cmap = copy.copy(cm.get_cmap(cmap))
+	current_cmap.set_bad(color="white")
+
+	plt.figure()
+	plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
+	plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True
+	ax = plt.gca()
+	ax.xaxis.set_label_position('top')
+	plt.imshow(np.array(values).astype(np.float), cmap=current_cmap)
+	plt.yticks(range(len(matrix.columns)), list(matrix.columns))
+	plt.xticks(range(len(matrix.columns)), list(matrix.columns))
+	cbar = plt.colorbar()
+	#cbar.set_ticks([-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100])
+	#cbar.set_ticklabels([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
+	plt.ylabel("n")
+	plt.xlabel("n+1")
+	plt.grid(False)
+	return plt
+
+
+
+# print to console to confirm everything is loaded properly
 print('pysan ready')
