@@ -1,0 +1,442 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pysan.core &#8212; pysan documentation</title>
+    <link rel="stylesheet" href="../../_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  </head><body>
+
+
+<div id="pageheader" class="full_width">
+	<div class="part_width">
+		<h1 class="title">
+			<a href="https://github.com/pysan-dev/pysan">pysan</a>
+		</h1>
+		<h3 class="subtitle">social sequence analysis in <a href='https://www.python.org' target="blank">Python</a></h3>
+	</div>
+</div>
+
+<script type="text/javascript">
+	
+
+
+	document.addEventListener("DOMContentLoaded", function(event) {
+
+		all_pres = document.getElementsByClassName('gp');
+
+		console.log(all_pres);
+
+		for(i=0; i<all_pres.length; i++){
+			if(all_pres[i].innerHTML.substring(0, 3) == 'In '){
+				all_pres[i].innerHTML = all_pres[i].innerHTML.substring(3, all_pres[i].innerHTML.length);
+			}
+		}
+
+
+	});
+
+</script>
+
+
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../index.html">pysan documentation</a></li>
+      <li>
+        <a href="../index.html">Module code</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pysan.core</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">random</span><span class="o">,</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
+
+<div class="viewcode-block" id="generate_sequence"><a class="viewcode-back" href="../../index.html#pysan.core.generate_sequence">[docs]</a><span class="k">def</span> <span class="nf">generate_sequence</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">alphabet</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Generates a random sequence of a given length, given an alphabet of elements.</span>
+<span class="sd">	This is useful for benchmarking function performance, and creating examples in the docs.</span>
+<span class="sd">	</span>
+<span class="sd">	Example</span>
+<span class="sd">	--------</span>
+<span class="sd">	&gt;&gt;&gt; ps.generate_sequence(12, [1,2,3])</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="get_alphabet"><a class="viewcode-back" href="../../index.html#pysan.core.get_alphabet">[docs]</a><span class="k">def</span> <span class="nf">get_alphabet</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Computes the alphabet of a given sequence (set of its unique elements).</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	sequence : int</span>
+<span class="sd">		A sequence of elements, encoded as integers e.g. [1,3,2,1].</span>
+
+<span class="sd">	Example</span>
+<span class="sd">	----------</span>
+
+<span class="sd">	&gt;&gt;&gt; sequence = [1,1,2,1,2,2,3,4,2]</span>
+<span class="sd">	&gt;&gt;&gt; ps.get_alphabet(sequence)</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span></div>
+	
+
+<div class="viewcode-block" id="get_unique_ngrams"><a class="viewcode-back" href="../../index.html#pysan.core.get_unique_ngrams">[docs]</a><span class="k">def</span> <span class="nf">get_unique_ngrams</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a list of all unique ngrams found in a given sequence.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">unique_ngrams</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="o">-</span>  <span class="n">n</span><span class="p">):</span>
+		<span class="n">this_ngram</span> <span class="o">=</span> <span class="n">sequence</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+		
+		<span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">this_ngram</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_ngrams</span><span class="p">:</span>
+			<span class="n">unique_ngrams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">this_ngram</span><span class="p">))</span>
+			
+	<span class="k">return</span> <span class="p">[</span><span class="nb">eval</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">unique_ngrams</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="get_all_ngrams"><a class="viewcode-back" href="../../index.html#pysan.core.get_all_ngrams">[docs]</a><span class="k">def</span> <span class="nf">get_all_ngrams</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a list of all ngrams found in a given sequence.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">all_ngrams</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="o">-</span>  <span class="n">n</span><span class="p">):</span>
+		<span class="n">this_ngram</span> <span class="o">=</span> <span class="n">sequence</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+		<span class="n">all_ngrams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_ngram</span><span class="p">)</span>
+			
+	<span class="k">return</span> <span class="n">all_ngrams</span></div>
+
+<div class="viewcode-block" id="get_ngram_universe"><a class="viewcode-back" href="../../index.html#pysan.core.get_ngram_universe">[docs]</a><span class="k">def</span> <span class="nf">get_ngram_universe</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Computes the universe of possible ngrams given a sequence. Where n is equal to the length of the sequence, the resulting number represents the sequence universe.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># if recurrance is possible, the universe is given by k^t (SSA pg 68)</span>
+	<span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span>
+	<span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+		<span class="k">return</span> <span class="s1">&#39;really big&#39;</span>
+	<span class="k">return</span> <span class="n">k</span><span class="o">**</span><span class="n">n</span></div>
+
+<div class="viewcode-block" id="get_ngram_prevalence"><a class="viewcode-back" href="../../index.html#pysan.core.get_ngram_prevalence">[docs]</a><span class="k">def</span> <span class="nf">get_ngram_prevalence</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Computes the prevalence of ngrams in a sequence, returning a dictionary where each key is an ngram, and each value is the number of times that ngram appears in the sequence.</span>
+<span class="sd">	</span>
+<span class="sd">	Parameters</span>
+<span class="sd">	-------------</span>
+<span class="sd">	sequence : list(int)</span>
+<span class="sd">		A sequence of elements, encoded as integers e.g. [1,3,2,1].</span>
+<span class="sd">	n: int</span>
+<span class="sd">		The number of elements in the ngrams to extract.</span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">ngrams</span> <span class="o">=</span> <span class="n">get_unique_ngrams</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+	
+	<span class="n">ngram_prevalence</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">):</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ngrams</span><span class="p">}</span>    
+	
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="o">-</span>  <span class="n">n</span><span class="p">):</span>
+		<span class="n">this_ngram</span> <span class="o">=</span> <span class="n">sequence</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+		<span class="n">ngram_prevalence</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">this_ngram</span><span class="p">)]</span> <span class="o">+=</span> <span class="mi">1</span>
+	
+	<span class="k">return</span> <span class="n">ngram_prevalence</span></div>
+
+
+<div class="viewcode-block" id="describe"><a class="viewcode-back" href="../../index.html#pysan.core.describe">[docs]</a><span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Computes descriptive properties of a given sequence, returning a dictionary containing the keys: </span>
+<span class="sd">	{&#39;length&#39;,&#39;alphabet&#39;,&#39;sequence_universe&#39;,&#39;unique_bigrams&#39;,&#39;bigram_universe&#39;}.</span>
+
+<span class="sd">	Example</span>
+<span class="sd">	---------</span>
+<span class="sd">	&gt;&gt;&gt; sequence = [1,1,2,1,2,2,3,4,2]</span>
+<span class="sd">	&gt;&gt;&gt; ps.describe(sequence)</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">details</span> <span class="o">=</span> <span class="p">{</span>
+	<span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">),</span>
+	<span class="s1">&#39;alphabet&#39;</span><span class="p">:</span> <span class="n">get_alphabet</span><span class="p">(</span><span class="n">sequence</span><span class="p">),</span>
+	<span class="s1">&#39;sequence_universe&#39;</span><span class="p">:</span> <span class="n">get_ngram_universe</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)),</span>
+	<span class="s1">&#39;unique_bigrams&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_unique_ngrams</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+	<span class="s1">&#39;bigram_universe&#39;</span> <span class="p">:</span> <span class="n">get_ngram_universe</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">details</span></div>
+
+<div class="viewcode-block" id="get_element_prevalence"><a class="viewcode-back" href="../../index.html#pysan.core.get_element_prevalence">[docs]</a><span class="k">def</span> <span class="nf">get_element_prevalence</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+	
+	<span class="n">elements</span> <span class="o">=</span> <span class="n">get_alphabet</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+	
+	<span class="n">prevalences</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+		<span class="n">prevalences</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="n">sequence</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+		
+	<span class="k">return</span> <span class="n">prevalences</span></div>
+
+<div class="viewcode-block" id="get_element_frequency"><a class="viewcode-back" href="../../index.html#pysan.core.get_element_frequency">[docs]</a><span class="k">def</span> <span class="nf">get_element_frequency</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Computes the relative frequency of each element in a sequence, returning a dictionary where each key is an element and each value is that elements relative frequency.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">elements</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">get_alphabet</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+	
+	<span class="n">prevalences</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+		<span class="n">prevalences</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="n">sequence</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+		
+	<span class="k">return</span> <span class="n">prevalences</span></div>
+
+<div class="viewcode-block" id="get_transition_matrix"><a class="viewcode-back" href="../../index.html#pysan.core.get_transition_matrix">[docs]</a><span class="k">def</span> <span class="nf">get_transition_matrix</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Computes a transition matrix for each bigram in a sequence.</span>
+<span class="sd">	The resulting matrix can be interpreted by reading along the side first, then across the top, indicating from the element in down the side to the element along the top.</span>
+<span class="sd">	For example, to find the number of transitions from element 2 to element 3, find element 2 down the side, then follow that row across until it reaches element 3 across the top.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	----------</span>
+<span class="sd">	&gt;&gt;&gt; sequence = [&#39;cook&#39;,&#39;exercise&#39;,&#39;sleep&#39;,&#39;sleep&#39;,&#39;cook&#39;,&#39;exercise&#39;,&#39;sleep&#39;]</span>
+<span class="sd">	&gt;&gt;&gt; ps.get_transition_matrix(sequence)</span>
+<span class="sd">		cook  exercise  sleep</span>
+<span class="sd">	cook       0.0       0.0    1.0</span>
+<span class="sd">	exercise   2.0       0.0    0.0</span>
+<span class="sd">	sleep      0.0       1.0    1.0</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">alphabet</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="n">alphabet</span> <span class="o">=</span> <span class="n">get_alphabet</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+	<span class="n">all_ngrams</span> <span class="o">=</span> <span class="n">get_all_ngrams</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+	<span class="n">transition_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)))</span>
+	<span class="n">descriptive_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;-&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">))]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">))]</span>
+
+	<span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">element_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alphabet</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">element_column</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alphabet</span><span class="p">):</span>
+			<span class="n">current_ngram</span> <span class="o">=</span> <span class="p">[</span><span class="n">element_row</span><span class="p">,</span> <span class="n">element_column</span><span class="p">]</span>
+			<span class="n">descriptive_matrix</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;n&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_ngram</span><span class="p">)</span>
+			<span class="c1">#print(&#39;from&#39;, current_ngram[0], &#39;to&#39;, current_ngram[1], &#39;:&#39;, all_ngrams.count(current_ngram))</span>
+			<span class="n">transition_matrix</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_ngrams</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">current_ngram</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+		<span class="n">de_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">descriptive_matrix</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">alphabet</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">alphabet</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="n">de_df</span><span class="p">)</span>
+	<span class="n">tm_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">transition_matrix</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">alphabet</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">alphabet</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">tm_df</span></div>
+
+
+
+
+
+
+
+
+<span class="c1"># ====================================================================================</span>
+<span class="c1"># PLOTTING FUNCTIONS</span>
+<span class="c1"># ====================================================================================</span>
+
+
+<div class="viewcode-block" id="plot_sequence"><a class="viewcode-back" href="../../index.html#pysan.core.plot_sequence">[docs]</a><span class="k">def</span> <span class="nf">plot_sequence</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a standard sequence plot where each element corresponds to a position on the y-axis.</span>
+<span class="sd">	</span>
+
+<span class="sd">	Example</span>
+<span class="sd">	----------</span>
+<span class="sd">	.. plot::</span>
+
+<span class="sd">		&gt;&gt;&gt; sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]</span>
+<span class="sd">		&gt;&gt;&gt; ps.plot_sequence(sequence)</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">np_sequence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+	<span class="n">alphabet_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_alphabet</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span>
+	
+	<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span><span class="o">*</span><span class="mf">0.2</span><span class="p">,</span><span class="n">alphabet_len</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">])</span>
+		
+	<span class="n">unique_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_values</span><span class="p">):</span>
+		
+		<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np_sequence</span> <span class="o">==</span> <span class="n">value</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+		
+		<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">np_sequence</span><span class="p">)),</span> <span class="n">y</span><span class="o">=</span><span class="n">points</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+	
+	<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_values</span><span class="p">)),</span> <span class="n">unique_values</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_values</span><span class="p">))</span>
+	
+	<span class="k">return</span> <span class="n">plt</span></div>
+
+
+<div class="viewcode-block" id="plot_element_prevalence"><a class="viewcode-back" href="../../index.html#pysan.core.plot_element_prevalence">[docs]</a><span class="k">def</span> <span class="nf">plot_element_prevalence</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Plots the number of occurances of each unique element in a given sequence.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">prev</span> <span class="o">=</span> <span class="n">get_element_prevalence</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+	<span class="n">prev</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">prev</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">prev</span><span class="o">.</span><span class="n">get</span><span class="p">)}</span>
+
+	<span class="n">xdata</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">prev</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+	<span class="n">ydata</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">prev</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+	
+	<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;element count&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+	<span class="k">return</span> <span class="n">plt</span></div>
+
+	
+<div class="viewcode-block" id="plot_ngram_prevalence"><a class="viewcode-back" href="../../index.html#pysan.core.plot_ngram_prevalence">[docs]</a><span class="k">def</span> <span class="nf">plot_ngram_prevalence</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Plots the number of occurances of ngrams in a given sequence.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">ngram_prevalence</span> <span class="o">=</span> <span class="n">get_ngram_prevalence</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+	<span class="n">ngram_prevalence</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">ngram_prevalence</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ngram_prevalence</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">ngram_prevalence</span><span class="o">.</span><span class="n">get</span><span class="p">)}</span>
+	
+	<span class="n">xdata</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">ngram_prevalence</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+	<span class="n">ydata</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">ngram_prevalence</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+	
+	<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span><span class="s1">&#39;-gram&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+	<span class="k">return</span> <span class="n">plt</span></div>
+
+
+<div class="viewcode-block" id="plot_transition_matrix"><a class="viewcode-back" href="../../index.html#pysan.core.plot_transition_matrix">[docs]</a><span class="k">def</span> <span class="nf">plot_transition_matrix</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;summer&#39;</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Computes and plots a transition matrix, returning a colored matrix with elements at position n up the y axis, and elements at position n+1 along the x axis.</span>
+
+
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">tm</span> <span class="o">=</span> <span class="n">get_transition_matrix</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+	<span class="n">plot</span> <span class="o">=</span> <span class="n">color_matrix</span><span class="p">(</span><span class="n">tm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">plot</span></div>
+
+
+
+<div class="viewcode-block" id="color_matrix"><a class="viewcode-back" href="../../index.html#pysan.core.color_matrix">[docs]</a><span class="k">def</span> <span class="nf">color_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;summer&#39;</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a shaded matrix based on the values in that matrix. This is most useful when given a transition matrix as it intuitively plots the prevalence of transitions between states. The y axis represents the elements at position n, and the x axis represents the elements at position n+1.</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	-----------</span>
+<span class="sd">	matrix: DataFrame</span>
+<span class="sd">		A 2D matrix of values in the form of a :pandas: dataframe. Column names are used as axis ticks.</span>
+<span class="sd">	cmap: string</span>
+<span class="sd">		The name of a `matplotlib color map &lt;https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html&gt;`_.</span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+
+	<span class="n">results_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+	<span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">results_size</span><span class="p">,</span> <span class="n">results_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">element</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
+				<span class="n">values</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+				<span class="k">continue</span>
+			<span class="k">if</span> <span class="n">element</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+				<span class="n">values</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+				<span class="k">continue</span>
+			<span class="k">if</span> <span class="s2">&quot;*&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+				<span class="n">value</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+				<span class="n">values</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">values</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span>
+
+	<span class="n">current_cmap</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">))</span>
+	<span class="n">current_cmap</span><span class="o">.</span><span class="n">set_bad</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+
+	<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;xtick.bottom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;xtick.labelbottom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;xtick.top&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;xtick.labeltop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+	<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+	<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">current_cmap</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">)),</span> <span class="nb">list</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">)),</span> <span class="nb">list</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+	<span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+	<span class="c1">#cbar.set_ticks([-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100])</span>
+	<span class="c1">#cbar.set_ticklabels([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;n+1&quot;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">plt</span></div>
+
+
+
+<span class="c1"># print to console to confirm everything is loaded properly</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pysan ready&#39;</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<form class="search" action="../../search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../index.html">pysan documentation</a></li>
+      <li>
+        <a href="../index.html">Module code</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2020, Oliver J. Scholten.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      3.2.1
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
+  </body>
+</html>

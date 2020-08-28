@@ -42,14 +42,14 @@ def full_analysis(sequence):
 	
 	"""
 	
-	details = ps.describe(sequence)
-	sequence_plot = ps.plot_sequence(sequence)
-	tm = ps.plot_transition_matrix(sequence)
+	details = describe(sequence)
+	sequence_plot = plot_sequence(sequence)
+	tm = plot_transition_matrix(sequence)
 	
-	element_counts = ps.get_element_counts(sequence)
-	element_prevalence = ps.plot_element_counts(sequence)
-	bigrams = ps.plot_ngram_counts(sequence, 2)
-	trigrams = ps.plot_ngram_counts(sequence, 3)
+	element_counts = get_element_counts(sequence)
+	element_prevalence = plot_element_counts(sequence)
+	bigrams = plot_ngram_counts(sequence, 2)
+	trigrams = plot_ngram_counts(sequence, 3)
 	
 	print(details)
 	print(element_counts, element_prevalence)
