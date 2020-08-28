@@ -63,6 +63,11 @@ sys.path.append('../../')
 import pysan as ps
 '''
 
+
+intersphinx_mapping = {'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None)}
+
+extlinks = {'pandas':('http://pandas.pydata.org', None)}
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

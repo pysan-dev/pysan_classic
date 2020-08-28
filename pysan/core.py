@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import random, copy
 import matplotlib.cm as cm
+import itertools
 
 def generate_sequence(length, alphabet):
 	"""
@@ -34,6 +35,71 @@ def get_alphabet(sequence):
 	"""
 	return set(sequence)
 	
+
+def full_analysis(sequence):
+	"""
+	Computes a collection of information on a given sequence plus a collection of plots.
+	
+	"""
+	
+	details = ps.describe(sequence)
+	sequence_plot = ps.plot_sequence(sequence)
+	tm = ps.plot_transition_matrix(sequence)
+	
+	element_counts = ps.get_element_counts(sequence)
+	element_prevalence = ps.plot_element_counts(sequence)
+	bigrams = ps.plot_ngram_counts(sequence, 2)
+	trigrams = ps.plot_ngram_counts(sequence, 3)
+	
+	print(details)
+	print(element_counts, element_prevalence)
+	sequence_plot.show()
+	tm.show()
+	bigrams.show()
+	trigrams.show()
+	
+	return None
+
+
+def get_spells(sequence):
+	"""
+	Returns a list of tuples where each tuple holds the element and the length of the spell (also known as run or episode) for each spell in the sequence.
+	
+	"""
+	
+	# get each spell and its length
+	spells = [(k, sum(1 for x in v)) for k,v in itertools.groupby(sequence)]
+	# this is functionally equivalent to the following;
+	# spells = [(k, len(list(v))) for k,v in itertools.groupby(sequence)]
+	
+	return spells
+
+
+def get_longest_spell(sequence):
+	"""
+	Returns a dict containing the element, count, and starting position of the longest spell in the sequence. The keys of this dict are 'element, 'count', and 'start'.
+	
+	"""
+	
+	spells = get_spells(sequence)
+
+	longest_spell = max(count for element, count in spells)
+
+	for i, (element, count) in enumerate(spells):
+		if count == longest_spell:
+			# sum the counts of all previous spells to get its starting position
+			position_in_sequence = sum(count for _,count in spells[:i])
+			
+			return {'element':element, 'count':count,'start':position_in_sequence}
+
+
+
+
+
+# ====================================================================================
+# NGRAM FUNCTIONS
+# ====================================================================================
+
 
 def get_unique_ngrams(sequence, n):
 	"""
@@ -71,7 +137,31 @@ def get_ngram_universe(sequence, n):
 		return 'really big'
 	return k**n
 
-def get_ngram_prevalence(sequence, n):
+def get_ngram_counts(sequence, n):
+	"""
+	Computes the counts of ngrams in a sequence, returning a dictionary where each key is an ngram, and each value is the number of times that ngram appears in the sequence.
+	
+	Parameters
+	-------------
+	sequence : list(int)
+		A sequence of elements, encoded as integers e.g. [1,3,2,1].
+	n: int
+		The number of elements in the ngrams to extract.
+	
+	"""
+	
+	ngrams = get_unique_ngrams(sequence, n)
+	
+	ngram_counts = {str(i):0 for i in ngrams}    
+	
+	for x in range(len(sequence) -  n):
+		this_ngram = sequence[x:x + n]
+		ngram_counts[str(this_ngram)] += 1
+	
+	return ngram_counts
+
+
+def get_ngram_counts(sequence, n):
 	"""
 	Computes the prevalence of ngrams in a sequence, returning a dictionary where each key is an ngram, and each value is the number of times that ngram appears in the sequence.
 	
@@ -86,14 +176,13 @@ def get_ngram_prevalence(sequence, n):
 	
 	ngrams = get_unique_ngrams(sequence, n)
 	
-	ngram_prevalence = {str(i):0 for i in ngrams}    
+	ngram_counts = {str(i):0 for i in ngrams}    
 	
 	for x in range(len(sequence) -  n):
 		this_ngram = sequence[x:x + n]
-		ngram_prevalence[str(this_ngram)] += 1
+		ngram_counts[str(this_ngram)] += 1
 	
-	return ngram_prevalence
-
+	return ngram_counts
 
 def describe(sequence):
 	"""
@@ -115,25 +204,33 @@ def describe(sequence):
 	}
 	return details
 
-def get_element_prevalence(sequence):
+
+
+
+# ====================================================================================
+# ELEMENT-ORIENTED FUNCTIONS
+# ====================================================================================
+
+
+def get_element_counts(sequence):
 	
-	elements = get_alphabet(sequence)
+	alphabet = get_alphabet(sequence)
 	
-	prevalences = {}
-	for element in elements:
-		prevalences[element] = sequence.count(element)
+	counts = {}
+	for element in alphabet:
+		counts[element] = sequence.count(element)
 		
-	return prevalences
+	return counts
 
 def get_element_frequency(sequence):
 	"""
 	Computes the relative frequency of each element in a sequence, returning a dictionary where each key is an element and each value is that elements relative frequency.
 	"""
 	
-	elements = ps.get_alphabet(sequence)
+	alphabet = get_alphabet(sequence)
 	
 	prevalences = {}
-	for element in elements:
+	for element in alphabet:
 		prevalences[element] = sequence.count(element) / len(sequence)
 		
 	return prevalences
@@ -217,13 +314,13 @@ def plot_sequence(sequence):
 	return plt
 
 
-def plot_element_prevalence(sequence):
+def plot_element_counts(sequence):
 	"""
 	Plots the number of occurances of each unique element in a given sequence.
 
 	"""
 	
-	prev = get_element_prevalence(sequence)
+	prev = get_element_counts(sequence)
 	prev = {k: prev[k] for k in sorted(prev, key=prev.get)}
 
 	xdata = [str(key) for key,value in prev.items()]
@@ -236,23 +333,36 @@ def plot_element_prevalence(sequence):
 	return plt
 
 	
-def plot_ngram_prevalence(sequence, n):
+def plot_ngram_counts(sequence, n):
 	"""
 	Plots the number of occurances of ngrams in a given sequence.
 
 	"""
 	
-	ngram_prevalence = get_ngram_prevalence(sequence, n)
-	ngram_prevalence = {k: ngram_prevalence[k] for k in sorted(ngram_prevalence, key=ngram_prevalence.get)}
+	ngram_counts = get_ngram_counts(sequence, n)
+	ngram_counts = {k: ngram_counts[k] for k in sorted(ngram_counts, key=ngram_counts.get)}
 	
-	xdata = [key[1:len(key)-1].replace(', ', ', ') for key,value in ngram_prevalence.items()]
-	ydata = [value for key,value in ngram_prevalence.items()]
+	xdata = [key[1:len(key)-1].replace(', ', ', ') for key,value in ngram_counts.items()]
+	ydata = [value for key,value in ngram_counts.items()]
 	
 	plt.figure()
 	plt.barh(xdata, ydata, label=str(n) +'-gram')
 	plt.gca().yaxis.grid(False)
 	plt.legend()
 	return plt
+
+
+def plot_transition_matrix(sequence, cmap='summer'):
+	"""
+	Computes and plots a transition matrix, returning a colored matrix with elements at position n up the y axis, and elements at position n+1 along the x axis.
+
+
+	"""
+
+	tm = get_transition_matrix(sequence)
+	plot = color_matrix(tm, cmap=cmap)
+	return plot
+
 
 
 def color_matrix(matrix, cmap='summer'):
@@ -262,7 +372,7 @@ def color_matrix(matrix, cmap='summer'):
 	Parameters
 	-----------
 	matrix: DataFrame
-		A 2D matrix of values in the form of a pandas dataframe. Column names are used as axis ticks.
+		A 2D matrix of values in the form of a :pandas: dataframe. Column names are used as axis ticks.
 	cmap: string
 		The name of a `matplotlib color map <https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html>`_.
 	
@@ -289,20 +399,21 @@ def color_matrix(matrix, cmap='summer'):
 	current_cmap.set_bad(color="white")
 
 	plt.figure()
-	plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
-	plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True
-	ax = plt.gca()
-	ax.xaxis.set_label_position('top')
-	plt.imshow(np.array(values).astype(np.float), cmap=current_cmap)
-	plt.yticks(range(len(matrix.columns)), list(matrix.columns))
-	plt.xticks(range(len(matrix.columns)), list(matrix.columns))
-	cbar = plt.colorbar()
-	#cbar.set_ticks([-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100])
-	#cbar.set_ticklabels([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
-	plt.ylabel("n")
-	plt.xlabel("n+1")
-	plt.grid(False)
-	return plt
+
+	# this one-lines sets the x axis to appear at the top of this plot only
+	with plt.rc_context({'xtick.bottom':False, 'xtick.labelbottom':False, 'xtick.top':True, 'xtick.labeltop':True}):
+		ax = plt.gca()
+		ax.xaxis.set_label_position('top')
+		plt.imshow(np.array(values).astype(np.float), cmap=current_cmap)
+		plt.yticks(range(len(matrix.columns)), list(matrix.columns))
+		plt.xticks(range(len(matrix.columns)), list(matrix.columns))
+		cbar = plt.colorbar()
+		#cbar.set_ticks([-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100])
+		#cbar.set_ticklabels([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
+		plt.ylabel("n")
+		plt.xlabel("n+1")
+		plt.grid(False)
+		return plt
 
 
 
