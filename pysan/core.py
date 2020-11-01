@@ -1,9 +1,12 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import random, copy
 import matplotlib.cm as cm
 import itertools
+
+random.seed('12345')
 
 def generate_sequence(length, alphabet):
 	"""
@@ -13,9 +16,9 @@ def generate_sequence(length, alphabet):
 	Example
 	--------
 	>>> ps.generate_sequence(12, [1,2,3])
+	[2, 3, 3, 3, 2, 2, 2, 1, 3, 3, 2, 2]
 	"""
 	return [random.choice(alphabet) for x in range(length)]
-
 
 def get_alphabet(sequence):
 	"""
@@ -31,11 +34,11 @@ def get_alphabet(sequence):
 
 	>>> sequence = [1,1,2,1,2,2,3,4,2]
 	>>> ps.get_alphabet(sequence)
+	{1, 2, 3, 4}
 
 	"""
 	return set(sequence)
 	
-
 def full_analysis(sequence):
 	"""
 	Computes a collection of information on a given sequence plus a collection of plots.
@@ -60,11 +63,15 @@ def full_analysis(sequence):
 	
 	return None
 
-
 def get_spells(sequence):
 	"""
 	Returns a list of tuples where each tuple holds the element and the length of the spell (also known as run or episode) for each spell in the sequence.
 	
+	Example
+	---------
+	>>> sequence = [1,1,2,1,2,2,3,4,2]
+	>>> ps.get_spells(sequence)
+
 	"""
 	
 	# get each spell and its length
@@ -74,11 +81,16 @@ def get_spells(sequence):
 	
 	return spells
 
-
 def get_longest_spell(sequence):
 	"""
 	Returns a dict containing the element, count, and starting position of the longest spell in the sequence. The keys of this dict are 'element, 'count', and 'start'.
 	
+	Example
+	--------
+	>>> sequence = [1,1,1,4,2,2,3,4,2]
+	>>> ps.get_longest_spell(sequence)
+	{'element': 1, 'count': 3, 'start': 0}
+
 	"""
 	
 	spells = get_spells(sequence)
@@ -92,22 +104,77 @@ def get_longest_spell(sequence):
 			
 			return {'element':element, 'count':count,'start':position_in_sequence}
 
+def is_recurrent(sequence):
+	"""
+	Returns true if the given sequence is recurrent (elements can exist more than once), otherwise returns false.
+
+	Example
+	---------
+	>>> sequence = [1,2,3,4,5]
+	>>> is_recurrent(sequence)
+	False
+	>>> sequence = [1,1,2,2,3]
+	>>> is_recurrent(sequence)
+	True
 
 
+	"""
+	
+	element_counts = ps.get_element_counts(sequence)
+	
+	truths = [count > 1 for element, count in element_counts.items()]
+	
+	if True in truths:
+	
+		return True
 
+	return False
+
+def first_position_report(sequence):
+	"""
+	Reports the first occurance of each element in the sequence in a dictionary, with each element as keys, and their first position as values.
+	
+	Example
+	---------
+	>>> sequence = [1,1,2,3,4]
+	>>> first_position_report(sequence)
+	{1: 0, 2: 2, 3: 3, 4: 4}
+
+
+	"""
+	unique_elements = list(set(sequence))
+
+	first_positions = {}
+	for element in unique_elements:
+		first_positions[element] = sequence.index(element)
+		
+	return first_positions
 
 # ====================================================================================
 # NGRAM FUNCTIONS
 # ====================================================================================
 
-
 def get_unique_ngrams(sequence, n):
 	"""
 	Creates a list of all unique ngrams found in a given sequence.
+	
+	Example
+	---------
+	>>> sequence = [2,1,1,4,2,2,3,4,2,1,1]
+	>>> ps.get_unique_ngrams(sequence, 3)
+	[[2, 1, 1],
+	 [1, 1, 4],
+	 [1, 4, 2],
+	 [4, 2, 2],
+	 [2, 2, 3],
+	 [2, 3, 4],
+	 [3, 4, 2],
+	 [4, 2, 1]]
 	"""
+
 	
 	unique_ngrams = []
-	for x in range(len(sequence) -  n):
+	for x in range(len(sequence) -  n + 1):
 		this_ngram = sequence[x:x + n]
 		
 		if str(this_ngram) not in unique_ngrams:
@@ -118,10 +185,26 @@ def get_unique_ngrams(sequence, n):
 def get_all_ngrams(sequence, n):
 	"""
 	Creates a list of all ngrams found in a given sequence.
+
+	
+	Example
+	---------
+	>>> sequence = [2,1,1,4,2,2,3,4,2,1,1]
+	>>> ps.get_unique_ngrams(sequence, 3)
+	[[2, 1, 1],
+	 [1, 1, 4],
+	 [1, 4, 2],
+	 [4, 2, 2],
+	 [2, 2, 3],
+	 [2, 3, 4],
+	 [3, 4, 2],
+	 [4, 2, 1],
+	 [2, 1, 1]]
+
 	"""
 	
 	all_ngrams = []
-	for x in range(len(sequence) -  n):
+	for x in range(len(sequence) -  n + 1):
 		this_ngram = sequence[x:x + n]
 		all_ngrams.append(this_ngram)
 			
@@ -130,35 +213,19 @@ def get_all_ngrams(sequence, n):
 def get_ngram_universe(sequence, n):
 	"""
 	Computes the universe of possible ngrams given a sequence. Where n is equal to the length of the sequence, the resulting number represents the sequence universe.
+
+	Example
+	--------
+	>>> sequence = [2,1,1,4,2,2,3,4,2,1,1]
+	>>> ps.get_ngram_universe(sequence, 3)
+	64
+
 	"""
 	# if recurrance is possible, the universe is given by k^t (SSA pg 68)
 	k = len(set(sequence))
 	if k > 10 and n > 10:
 		return 'really big'
 	return k**n
-
-def get_ngram_counts(sequence, n):
-	"""
-	Computes the counts of ngrams in a sequence, returning a dictionary where each key is an ngram, and each value is the number of times that ngram appears in the sequence.
-	
-	Parameters
-	-------------
-	sequence : list(int)
-		A sequence of elements, encoded as integers e.g. [1,3,2,1].
-	n: int
-		The number of elements in the ngrams to extract.
-	
-	"""
-	
-	ngrams = get_unique_ngrams(sequence, n)
-	
-	ngram_counts = {str(i):0 for i in ngrams}    
-	
-	for x in range(len(sequence) -  n):
-		this_ngram = sequence[x:x + n]
-		ngram_counts[str(this_ngram)] += 1
-	
-	return ngram_counts
 
 
 def get_ngram_counts(sequence, n):
@@ -172,13 +239,26 @@ def get_ngram_counts(sequence, n):
 	n: int
 		The number of elements in the ngrams to extract.
 	
+	Example
+	---------
+	>>> sequence = [2,1,1,4,2,2,3,4,2,1,1]
+	>>> ps.get_ngram_counts(sequence, 3)
+	{'[2, 1, 1]': 2,
+	 '[1, 1, 4]': 1,
+	 '[1, 4, 2]': 1,
+	 '[4, 2, 2]': 1,
+	 '[2, 2, 3]': 1,
+	 '[2, 3, 4]': 1,
+	 '[3, 4, 2]': 1,
+	 '[4, 2, 1]': 1}
+
 	"""
 	
 	ngrams = get_unique_ngrams(sequence, n)
 	
 	ngram_counts = {str(i):0 for i in ngrams}    
 	
-	for x in range(len(sequence) -  n):
+	for x in range(len(sequence) -  n + 1):
 		this_ngram = sequence[x:x + n]
 		ngram_counts[str(this_ngram)] += 1
 	
@@ -193,6 +273,11 @@ def describe(sequence):
 	---------
 	>>> sequence = [1,1,2,1,2,2,3,4,2]
 	>>> ps.describe(sequence)
+	{'length': 9,
+	'alphabet': {1, 2, 3, 4},
+	'sequence_universe': 262144,
+	'unique_bigrams': 6,
+	'bigram_universe': 16}
 
 	"""
 	details = {
@@ -213,7 +298,16 @@ def describe(sequence):
 
 
 def get_element_counts(sequence):
+	"""
+	Counts the numeber of occurances for each element in a sequence, returning a dictionary containing the elements as keys and their counts as values.
 	
+	Example
+	---------
+	>>> sequence = [1,1,2,1,2,2,3,4,2]
+	>>> ps.get_element_counts(sequence)
+	{1: 3, 2: 4, 3: 1, 4: 1}
+	
+	"""
 	alphabet = get_alphabet(sequence)
 	
 	counts = {}
@@ -224,7 +318,14 @@ def get_element_counts(sequence):
 
 def get_element_frequency(sequence):
 	"""
-	Computes the relative frequency of each element in a sequence, returning a dictionary where each key is an element and each value is that elements relative frequency.
+	Computes the relative frequency (aka prevalence or unconditional probability) of each element in a sequence, returning a dictionary where each key is an element and each value is that elements relative frequency.
+	
+	Example
+	---------
+	>>> sequence = [1,1,2,1,2,2,3,4,2,1]
+	>>> ps.get_element_frequency(sequence)
+	{1: 0.4, 2: 0.4, 3: 0.1, 4: 0.1}
+
 	"""
 	
 	alphabet = get_alphabet(sequence)
@@ -272,12 +373,6 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 	return tm_df
 
 
-
-
-
-
-
-
 # ====================================================================================
 # PLOTTING FUNCTIONS
 # ====================================================================================
@@ -299,24 +394,30 @@ def plot_sequence(sequence):
 	np_sequence = np.array(sequence)
 	alphabet_len = len(get_alphabet(sequence))
 	
-	plt.figure(figsize=[len(sequence)*0.2,alphabet_len * 0.25])
+	plt.figure(figsize=[len(sequence)*0.3,alphabet_len * 0.3])
 		
 	unique_values = list(set(sequence))
 	for i, value in enumerate(unique_values):
 		
 		points = np.where(np_sequence == value, i, np.nan)
 		
-		plt.scatter(x=range(len(np_sequence)), y=points, marker='s', label=value)
+		plt.scatter(x=range(len(np_sequence)), y=points, marker='s', label=value, s=35)
 	
 	plt.yticks(range(len(unique_values)), unique_values)
 	plt.ylim(-1, len(unique_values))
 	
 	return plt
 
-
 def plot_element_counts(sequence):
 	"""
 	Plots the number of occurances of each unique element in a given sequence.
+
+	Example
+	---------
+	.. plot::
+
+		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
+		>>> ps.plot_element_counts(sequence)
 
 	"""
 	
@@ -332,10 +433,16 @@ def plot_element_counts(sequence):
 	plt.legend()
 	return plt
 
-	
 def plot_ngram_counts(sequence, n):
 	"""
 	Plots the number of occurances of ngrams in a given sequence.
+
+	Example
+	---------
+	.. plot::
+
+		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
+		>>> ps.plot_ngram_counts(sequence, 3)
 
 	"""
 	
@@ -351,18 +458,22 @@ def plot_ngram_counts(sequence, n):
 	plt.legend()
 	return plt
 
-
 def plot_transition_matrix(sequence, cmap='summer'):
 	"""
 	Computes and plots a transition matrix, returning a colored matrix with elements at position n up the y axis, and elements at position n+1 along the x axis.
 
+	Example
+	---------
+	.. plot::
+
+		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
+		>>> ps.plot_transition_matrix(sequence)
 
 	"""
 
 	tm = get_transition_matrix(sequence)
 	plot = color_matrix(tm, cmap=cmap)
 	return plot
-
 
 
 def color_matrix(matrix, cmap='summer'):
@@ -376,6 +487,7 @@ def color_matrix(matrix, cmap='summer'):
 	cmap: string
 		The name of a `matplotlib color map <https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html>`_.
 	
+
 	"""
 
 
@@ -414,8 +526,6 @@ def color_matrix(matrix, cmap='summer'):
 		plt.xlabel("n+1")
 		plt.grid(False)
 		return plt
-
-
 
 # print to console to confirm everything is loaded properly
 print('pysan ready')

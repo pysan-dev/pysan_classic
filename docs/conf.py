@@ -56,6 +56,7 @@ import sys
 sys.path.append('../../')
 import pysan as ps
 '''
+plot_rcparams = {'savefig.bbox': 'tight'}
 doctest_test_doctest_blocks = 'nonemptystring'
 doctest_global_setup = '''
 import sys

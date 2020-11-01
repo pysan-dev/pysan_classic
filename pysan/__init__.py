@@ -14,6 +14,7 @@ from pysan.core import(
 
     get_spells,
     get_longest_spell,
+    is_recurrent,
 
 
     get_all_ngrams,

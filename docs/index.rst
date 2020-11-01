@@ -16,7 +16,6 @@ In science, this can be applied to anything from communication data, to consumer
 
 To find out more about sequence analysis using pysan, continue reading down this page, starting with how to install the latest version from PyPI.
 
-:pandas:
 
 Installation
 ===============
