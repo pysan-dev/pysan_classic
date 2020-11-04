@@ -174,6 +174,7 @@ def first_position_report(sequence):
 def get_entropy(sequence):
 	"""
 	Computes the normalised `Shannon entropy <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`_ of a given sequence, using the `scipy.stats.entropy <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.entropy.html>`_ implementation.
+	Note that this measure is insensitive to transition frequency or event order, so should be used in conjunction with other measures.
 	
 	Example
 	--------
@@ -196,6 +197,43 @@ def get_entropy(sequence):
 
 	return entropy
 
+def get_distinct_subsequence_count(sequence):
+	"""
+	Computes the number of distinct subsequences for a given sequence, based on original implementation by 
+	Mohit Kumar available `here <https://www.geeksforgeeks.org/count-distinct-subsequences/>`_.
+	
+	Example
+	--------
+	>>> sequence = [1,2,1,3]
+	>>> ps.get_distinct_subsequence_count(sequence)
+	14
+	
+	"""
+	# create an array to store index of last
+	last = [-1 for i in range(256 + 1)] # hard-coded value needs explaining -ojs
+	 
+	# length of input string
+	sequence_length = len(sequence)
+	 
+	# dp[i] is going to store count of discount subsequence of length of i
+	dp = [-2 for i in range(sequence_length + 1)]
+	  
+	# empty substring has only one subseqence
+	dp[0] = 1
+	 
+	# Traverse through all lengths from 1 to n 
+	for i in range(1, sequence_length + 1):
+		 
+		# number of subseqence with substring str[0...i-1]
+		dp[i] = 2 * dp[i - 1]
+ 
+		# if current character has appeared before, then remove all subseqences ending with previous occurrence.
+		if last[ord(sequence[i - 1])] != -1:
+			dp[i] = dp[i] - dp[last[ord(sequence[i - 1])]]
+			
+		last[ord(sequence[i - 1])] = i - 1    
+	
+	return dp[sequence_length]
 
 # ====================================================================================
 # NGRAM FUNCTIONS

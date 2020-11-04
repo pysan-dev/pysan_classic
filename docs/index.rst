@@ -15,6 +15,9 @@ Welcome
 	
 	<p><a href='https://github.com/pysan-dev/pysan'><i class="fab fa-2x fa-python"></i> Install with PyPI</a></p>
 
+.. image:: _images/plot_sequence.png
+
+
 Why use pysan?
 ===============
 Lots of events in the natural world happen in a particular order, from making a cup of tea, to getting job promotions, and so on.

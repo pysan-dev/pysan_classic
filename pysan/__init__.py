@@ -16,6 +16,7 @@ from pysan.core import(
     get_longest_spell,
     is_recurrent,
     get_entropy,
+    get_distinct_subsequence_count,
 
 
     get_all_ngrams,
