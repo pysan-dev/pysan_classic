@@ -15,6 +15,7 @@ from pysan.core import(
     get_spells,
     get_longest_spell,
     is_recurrent,
+    get_entropy,
 
 
     get_all_ngrams,
@@ -23,6 +24,7 @@ from pysan.core import(
     get_ngram_universe,
 
 
+    get_ntransitions,
     get_transition_matrix,
 
 
@@ -32,4 +34,16 @@ from pysan.core import(
     plot_transition_matrix,
     color_matrix,
 )
+
+from pysan.multisequence import(
+
+    get_common_ngrams,
+
+    plot_common_ngrams,
+
+    plot_state_distribution,
+
+    plot_mean_occurance,
+
+    )
 

@@ -5,6 +5,7 @@ import matplotlib as mpl
 import random, copy
 import matplotlib.cm as cm
 import itertools
+import scipy.stats
 
 random.seed('12345')
 
@@ -104,6 +105,26 @@ def get_longest_spell(sequence):
 			
 			return {'element':element, 'count':count,'start':position_in_sequence}
 
+def get_ntransitions(sequence):
+	"""
+	Computes the number of transitions in a sequence.
+	
+	Example
+	--------
+	>>> sequence = [1,1,1,2,2,3,3,3,4,4]
+	>>> get_ntransitions(sequence)
+	3
+	
+	"""
+	
+	
+	ntransitions = 0
+	for position in range(len(sequence) - 1):
+		if sequence[position] != sequence[position + 1]:
+			ntransitions += 1
+	
+	return ntransitions
+
 def is_recurrent(sequence):
 	"""
 	Returns true if the given sequence is recurrent (elements can exist more than once), otherwise returns false.
@@ -149,6 +170,32 @@ def first_position_report(sequence):
 		first_positions[element] = sequence.index(element)
 		
 	return first_positions
+
+def get_entropy(sequence):
+	"""
+	Computes the normalised `Shannon entropy <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`_ of a given sequence, using the `scipy.stats.entropy <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.entropy.html>`_ implementation.
+	
+	Example
+	--------
+	>>> low_entropy_sequence = [1,1,1,1,1,1,1,2]
+	>>> ps.get_entropy(low_entropy_sequence)
+	0.543...
+	>>> high_entropy_sequence = [1,2,2,3,4,3]
+	>>> ps.get_entropy(high_entropy_sequence)
+	0.959...
+	
+	"""
+	
+	element_counts = get_element_counts(sequence)
+
+	counts_only = [value for key,value in element_counts.items()]
+
+	normalised_counts = [float(i)/len(sequence) for i in counts_only]
+
+	entropy = scipy.stats.entropy(normalised_counts, base=len(normalised_counts))
+
+	return entropy
+
 
 # ====================================================================================
 # NGRAM FUNCTIONS
@@ -267,7 +314,7 @@ def get_ngram_counts(sequence, n):
 def describe(sequence):
 	"""
 	Computes descriptive properties of a given sequence, returning a dictionary containing the keys: 
-	{'length','alphabet','sequence_universe','unique_bigrams','bigram_universe'}.
+	{'length','alphabet','sequence_universe','unique_bigrams','bigram_universe','entropy'}.
 
 	Example
 	---------
@@ -277,7 +324,8 @@ def describe(sequence):
 	'alphabet': {1, 2, 3, 4},
 	'sequence_universe': 262144,
 	'unique_bigrams': 6,
-	'bigram_universe': 16}
+	'bigram_universe': 16,
+	'entropy': 0.876357...}
 
 	"""
 	details = {
@@ -285,7 +333,8 @@ def describe(sequence):
 	'alphabet': get_alphabet(sequence),
 	'sequence_universe': get_ngram_universe(sequence, len(sequence)),
 	'unique_bigrams': len(get_unique_ngrams(sequence, 2)),
-	'bigram_universe' : get_ngram_universe(sequence, 2)
+	'bigram_universe' : get_ngram_universe(sequence, 2),
+	'entropy' : get_entropy(sequence)
 	}
 	return details
 
@@ -378,10 +427,11 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 # ====================================================================================
 
 
-def plot_sequence(sequence):
+def plot_sequence(sequence, highlighted_ngrams=[]):
 	"""
 	Creates a standard sequence plot where each element corresponds to a position on the y-axis.
-	
+	The optional highlighted_ngrams parameter can be one or more n-grams to be outlined in a red box.
+
 
 	Example
 	----------
@@ -389,23 +439,67 @@ def plot_sequence(sequence):
 
 		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
 		>>> ps.plot_sequence(sequence)
+		
+	.. plot::
 
+		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
+		>>> ps.plot_sequence(sequence, [1,2])
+
+	.. plot::
+
+		>>> sequence = [1,2,3,2,3,4,4,3,2,3,1,3,1,2,3,1,3,4,2,3,2,2]
+		>>> ps.plot_sequence(sequence, [[1,2,3], [3,4]])
+	
 	"""
 	np_sequence = np.array(sequence)
 	alphabet_len = len(get_alphabet(sequence))
-	
+
 	plt.figure(figsize=[len(sequence)*0.3,alphabet_len * 0.3])
-		
+
 	unique_values = list(set(sequence))
 	for i, value in enumerate(unique_values):
-		
+
 		points = np.where(np_sequence == value, i, np.nan)
-		
+
 		plt.scatter(x=range(len(np_sequence)), y=points, marker='s', label=value, s=35)
-	
+
 	plt.yticks(range(len(unique_values)), unique_values)
 	plt.ylim(-1, len(unique_values))
 	
+	# highlight any of the n-grams given
+	
+	if highlighted_ngrams != []:
+		
+		def highlight_ngram(ngram):
+			n = len(ngram)
+			match_positions = []
+			for x in range(len(sequence) -  n + 1):
+				this_ngram = sequence[x:x + n]
+				if str(this_ngram) == str(ngram):
+					match_positions.append(x)
+
+			for position in match_positions:
+				bot = min(ngram) - 1.5
+				top = max(ngram) - 0.5
+				left = position - 0.5
+				right = left + n
+				
+				line_width = 1
+				plt.plot([left,right], [bot,bot], color='red', linewidth=line_width)
+				plt.plot([left,right], [top,top], color='red', linewidth=line_width)
+				plt.plot([left,left], [bot,top], color='red', linewidth=line_width)
+				plt.plot([right,right], [bot,top], color='red', linewidth=line_width)
+				
+		# check if only one n-gram has been supplied
+		if type(highlighted_ngrams[0]) is int:
+			
+			highlight_ngram(highlighted_ngrams)
+		
+		else: # multiple n-gram's found
+			
+			for ngram in highlighted_ngrams:
+				highlight_ngram(ngram)
+
 	return plt
 
 def plot_element_counts(sequence):
@@ -466,7 +560,7 @@ def plot_transition_matrix(sequence, cmap='summer'):
 	---------
 	.. plot::
 
-		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
+		>>> sequence = [1,1,2,1,4,2,3,1,1,2,2,1,2,2,3,1,1,2]
 		>>> ps.plot_transition_matrix(sequence)
 
 	"""
