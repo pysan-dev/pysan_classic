@@ -189,7 +189,7 @@ def get_entropy(sequence):
 	
 	"""
 	
-	alphabet = ps.get_alphabet(sequence)
+	alphabet = get_alphabet(sequence)
     
     entropy = 0
     for state in alphabet:
