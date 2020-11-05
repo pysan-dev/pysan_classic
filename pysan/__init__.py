@@ -17,6 +17,7 @@ from pysan.core import(
     is_recurrent,
     get_entropy,
     get_distinct_subsequence_count,
+    get_turbulence,
 
 
     get_all_ngrams,

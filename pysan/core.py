@@ -6,6 +6,8 @@ import random, copy
 import matplotlib.cm as cm
 import itertools
 import scipy.stats
+import math
+import statistics
 
 random.seed('12345')
 
@@ -187,15 +189,14 @@ def get_entropy(sequence):
 	
 	"""
 	
-	element_counts = get_element_counts(sequence)
-
-	counts_only = [value for key,value in element_counts.items()]
-
-	normalised_counts = [float(i)/len(sequence) for i in counts_only]
-
-	entropy = scipy.stats.entropy(normalised_counts, base=len(normalised_counts))
-
-	return entropy
+	alphabet = ps.get_alphabet(sequence)
+    
+    entropy = 0
+    for state in alphabet:
+        proportion_occurances = sequence.count(state) / len(sequence)
+        entropy += proportion_occurances * math.log(proportion_occurances)
+        
+    return -entropy
 
 def get_distinct_subsequence_count(sequence):
 	"""
@@ -242,7 +243,48 @@ def get_distinct_subsequence_count(sequence):
 def get_turbulence(sequence):
 	"""
 	
-	UC Computes turbulence for a given sequence, based on `Elzinga & Liefbroer's 2007 definition <https://www.researchgate.net/publication/225402919_De-standardization_of_Family-Life_Trajectories_of_Young_Adults_A_Cross-National_Comparison_Using_Sequence_Analysis>`_ which is also implemented in the `TraMineR <http://traminer.unige.ch/doc/seqST.html>`_ sequence analysis library.
+	Computes turbulence for a given sequence, based on `Elzinga & Liefbroer's 2007 definition <https://www.researchgate.net/publication/225402919_De-standardization_of_Family-Life_Trajectories_of_Young_Adults_A_Cross-National_Comparison_Using_Sequence_Analysis>`_ which is also implemented in the `TraMineR <http://traminer.unige.ch/doc/seqST.html>`_ sequence analysis library.
+	
+	Example
+	--------
+	>>> sequence = [1,1,2,2,3]
+	>>> ps.get_turbulence(sequence)
+	5.228...
+
+	"""
+
+	phi = get_distinct_subsequence_count(sequence)
+
+	#print('phi', phi)
+
+	state_durations = [value for key, value in get_spells(sequence)]
+
+	#print('durations', state_durations)
+	#print('mean duration', statistics.mean(state_durations))
+
+	variance_of_state_durations = statistics.variance(state_durations)
+
+	#print('variance', variance_of_state_durations)
+
+	tbar = statistics.mean(state_durations)
+
+	maximum_state_duration_variance = (len(sequence) - 1) * (1 - tbar) ** 2
+
+	#print('smax', maximum_state_duration_variance)
+
+	top_right = maximum_state_duration_variance + 1
+	bot_right = variance_of_state_durations + 1
+
+	turbulence = math.log2(phi * (top_right / bot_right))
+
+	#print('turbulence', turbulence)
+
+	return turbulence
+
+def get_complexity(sequence):
+	"""
+	
+	UC Computes the complexity of a given sequence.
 	
 
 
@@ -368,7 +410,7 @@ def get_ngram_counts(sequence, n):
 def describe(sequence):
 	"""
 	Computes descriptive properties of a given sequence, returning a dictionary containing the keys: 
-	{'length','alphabet','sequence_universe','unique_bigrams','bigram_universe','entropy'}.
+	{'length', 'alphabet', 'sequence_universe', 'unique_bigrams', 'bigram_universe', 'entropy'}.
 
 	Example
 	---------
@@ -379,6 +421,7 @@ def describe(sequence):
 	'sequence_universe': 262144,
 	'unique_bigrams': 6,
 	'bigram_universe': 16,
+	'ntransitions': 6,
 	'entropy': 0.876357...}
 
 	"""
@@ -388,6 +431,7 @@ def describe(sequence):
 	'sequence_universe': get_ngram_universe(sequence, len(sequence)),
 	'unique_bigrams': len(get_unique_ngrams(sequence, 2)),
 	'bigram_universe' : get_ngram_universe(sequence, 2),
+	'ntransitions' : get_ntransitions(sequence),
 	'entropy' : get_entropy(sequence)
 	}
 	return details

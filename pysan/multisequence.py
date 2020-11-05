@@ -73,6 +73,13 @@ def get_modal_state(sequences):
 	
 	return modal_elements
 
+def get_state_frequency(sequences):
+	"""
+	Computes the sequence frequency for each position in a collection of sequences.
+	"""
+
+	pass
+
 def get_global_alphabet(sequences):
 	"""
 	Computes the alphabet across all sequences in a collection.
@@ -92,6 +99,17 @@ def get_global_alphabet(sequences):
 	global_alphabet = sorted(list(set([item for sublist in alphabets for item in sublist])))
 	
 	return global_alphabet
+
+def get_transition_frequencies(sequences):
+	"""
+	Computes the frequency of transitions between states across a collection of sequences.
+
+	"""
+
+	pass
+
+
+# ============= MULTISEQUENCE PLOTTING ===============
 
 
 def plot_common_ngrams(sequences, ngram_length):
@@ -177,6 +195,14 @@ def plot_state_distribution(sequences):
 
 	return plt
 
+def plot_sequence_frequency(sequences):
+	"""
+	UC Creates a sequence frequency plot for a collection of sequences.
+
+	"""
+
+	pass
+
 def plot_mean_occurance(sequences):
 	"""
 	Plots the mean number of occurances of each element across a collection of sequences.
@@ -255,3 +281,14 @@ def plot_modal_state(sequences):
 	plt.xlabel('Position')
 	
 	return plt
+
+
+def plot_entropy(sequence):
+	"""
+	
+	UC Plots the entropy of a collection of sequences at each position over time.
+	
+
+
+	"""
+	pass

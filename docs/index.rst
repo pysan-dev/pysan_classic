@@ -144,3 +144,11 @@ Method Documentation
 .. automodule:: pysan.multisequence
 	:members:
 	:undoc-members:
+
+
+
+More Resources
+------------------
+
+The Sequence Analysis Association's website has a `list of sequence analysis publications <https://www.zotero.org/groups/2268769/saa_bibliography/library>`_, and sequence analysis `software in other languages <https://sequenceanalysis.org/softwares/>`_.
+The book titled Social Sequence Analysis by Benjamin Cornwell is a great introduction to the field, and was the inspiration for writing this library.

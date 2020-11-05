@@ -22,6 +22,10 @@ body{
 	padding-top: 10px;
 }
 
+.sphinxsidebarwrapper{
+	position: fixed;
+}
+
 .part_width{
 	max-width: 60rem;
 	margin: 0 auto;
@@ -80,3 +84,4 @@ pre{
 img{
 	vertical-align: middle;
 }
+
