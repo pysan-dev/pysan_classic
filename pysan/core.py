@@ -190,13 +190,13 @@ def get_entropy(sequence):
 	"""
 	
 	alphabet = get_alphabet(sequence)
-    
-    entropy = 0
-    for state in alphabet:
-        proportion_occurances = sequence.count(state) / len(sequence)
-        entropy += proportion_occurances * math.log(proportion_occurances)
-        
-    return -entropy
+	
+	entropy = 0
+	for state in alphabet:
+		proportion_occurances = sequence.count(state) / len(sequence)
+		entropy += proportion_occurances * math.log(proportion_occurances)
+		
+	return -entropy
 
 def get_distinct_subsequence_count(sequence):
 	"""
@@ -290,7 +290,33 @@ def get_complexity(sequence):
 
 	"""
 	
-	pass
+	alphabet = get_alphabet(sequence)
+
+    pre_log = 1 / len(alphabet)
+    hmax = -math.log(pre_log)
+    #print('hmax', hmax)
+    if hmax == 0:
+        return 0 # all identical elements, no complexity
+
+    hs = get_entropy(sequence)
+    #print('hs', hs)
+
+    qs = get_ntransitions(sequence)
+    #print('qs', qs)
+
+    qmax = len(sequence) - 1
+    #print('qmax', qmax)
+
+    norm_transitions = qs / qmax
+    norm_entropy = hs / hmax
+
+    #print('nt', norm_transitions)
+    #print('ne', norm_entropy)
+
+    complexity = math.sqrt(norm_transitions * norm_entropy)
+
+    #print('complexity', complexity)
+    return complexity
 	
 
 # ====================================================================================
