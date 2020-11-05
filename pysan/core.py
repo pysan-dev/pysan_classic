@@ -447,7 +447,7 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 
 	Examples
 	----------
-	>>> sequence = ['cook','exercise','sleep','sleep','cook','exercise','sleep']
+	>>> sequence = [1,2,2,1,2,3,2,3,1]
 	>>> ps.get_transition_matrix(sequence)
 		cook  exercise  sleep
 	cook       0.0       0.0    1.0
@@ -469,10 +469,14 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 			#print('from', current_ngram[0], 'to', current_ngram[1], ':', all_ngrams.count(current_ngram))
 			transition_matrix[x, y] = all_ngrams.count(current_ngram)
 
+	# add column & index labelling in TraMineR style
+	pre_alphabet = [str(a) + '->' for a in alphabet]
+	post_alphabet = ['->' + str(a) for a in alphabet]
+
 	if verbose:
-		de_df = pd.DataFrame(descriptive_matrix, columns=alphabet, index=alphabet)
+		de_df = pd.DataFrame(descriptive_matrix, columns=post_alphabet, index=pre_alphabet)
 		print(de_df)
-	tm_df = pd.DataFrame(transition_matrix, columns=alphabet, index=alphabet)
+	tm_df = pd.DataFrame(transition_matrix, columns=post_alphabet, index=pre_alphabet)
 	return tm_df
 
 
@@ -665,13 +669,12 @@ def color_matrix(matrix, cmap='summer'):
 		ax = plt.gca()
 		ax.xaxis.set_label_position('top')
 		plt.imshow(np.array(values).astype(np.float), cmap=current_cmap)
-		plt.yticks(range(len(matrix.columns)), list(matrix.columns))
+
+		plt.yticks(range(len(matrix.index)), list(matrix.index))
 		plt.xticks(range(len(matrix.columns)), list(matrix.columns))
 		cbar = plt.colorbar()
 		#cbar.set_ticks([-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100])
 		#cbar.set_ticklabels([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
-		plt.ylabel("n")
-		plt.xlabel("n+1")
 		plt.grid(False)
 		return plt
 
