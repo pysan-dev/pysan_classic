@@ -70,9 +70,9 @@ def get_spells(sequence):
 	
 	Example
 	---------
-	>>> sequence = [1,1,2,1,2,2,3,4,2]
+	>>> sequence = [1,1,2,1,2,2,3]
 	>>> ps.get_spells(sequence)
-
+	[(1, 2), (2, 1), (1, 1), (2, 2), (3, 1)]
 	"""
 	
 	# get each spell and its length
@@ -209,6 +209,10 @@ def get_distinct_subsequence_count(sequence):
 	14
 	
 	"""
+	# this implementation works on strings, so parse non-strings to strings
+	if sequence is not str:
+		sequence = [str(e) for e in sequence]
+
 	# create an array to store index of last
 	last = [-1 for i in range(256 + 1)] # hard-coded value needs explaining -ojs
 	 
@@ -234,6 +238,18 @@ def get_distinct_subsequence_count(sequence):
 		last[ord(sequence[i - 1])] = i - 1    
 	
 	return dp[sequence_length]
+
+def get_turbulence(sequence):
+	"""
+	
+	UC Computes turbulence for a given sequence, based on `Elzinga & Liefbroer's 2007 definition <https://www.researchgate.net/publication/225402919_De-standardization_of_Family-Life_Trajectories_of_Young_Adults_A_Cross-National_Comparison_Using_Sequence_Analysis>`_ which is also implemented in the `TraMineR <http://traminer.unige.ch/doc/seqST.html>`_ sequence analysis library.
+	
+
+
+	"""
+	
+	pass
+	
 
 # ====================================================================================
 # NGRAM FUNCTIONS

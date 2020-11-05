@@ -29,6 +29,18 @@
 		}
 
 
+		// add 'under construction' tags to descriptions
+
+		all_paragraphs = document.getElementsByTagName('p');
+
+		for(i=0; i<all_paragraphs.length; i++){
+			if(all_paragraphs[i].innerHTML.substring(0, 3) == 'UC '){
+				console.log(all_paragraphs[i]);
+				all_paragraphs[i].innerHTML = '<img src="https://img.shields.io/badge/-under%20construction-orange?style=flat-square"> ' + all_paragraphs[i].innerHTML.substring(3, all_paragraphs[i].length);
+			}
+		}
+
+
 	});
 
 </script>

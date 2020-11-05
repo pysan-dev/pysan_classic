@@ -39,6 +39,61 @@ def get_common_ngrams(sequences, ngram_length):
 				del found_ngrams[key]
 	return found_ngrams
 
+def get_modal_state(sequences):
+	"""
+	Computes the modal states for each position in a collection of sequences, returning a sequence.
+
+	Example
+	--------
+	>>> s1 = [1,1,1,2,2,3,3]
+	>>> s2 = [1,2,2,2,2,3,3]
+	>>> s3 = [1,1,1,1,2,2,3]
+	>>> sequences = [s1,s2,s3]
+	>>> ps.get_modal_state(sequences)
+	[1,1,1,2,2,3,3]
+
+	"""
+
+	longest_sequence = max([len(s) for s in sequences])
+	
+	modal_elements = []
+	for position in range(longest_sequence):
+		
+		elements_at_this_position = []
+		for sequence in sequences:
+			try:
+				elements_at_this_position.append(sequence[position])
+			except:
+				continue
+		
+		# this line leaves multi-modal position behaviour undefined
+		modal_element = max(set(elements_at_this_position), key=elements_at_this_position.count)
+		
+		modal_elements.append((modal_element, elements_at_this_position.count(modal_element)))
+	
+	return modal_elements
+
+def get_global_alphabet(sequences):
+	"""
+	Computes the alphabet across all sequences in a collection.
+
+	Example
+	---------
+	>>> s1 = [1,1,1,2,2,2]
+	>>> s2 = [1,1,2,2,3,3]
+	>>> sequences = [s1,s2]
+	>>> ps.get_global_alphabet(sequences)
+	[1,2,3]
+
+	"""
+	
+	alphabets = [pysan_core.get_alphabet(s) for s in sequences]
+	
+	global_alphabet = sorted(list(set([item for sublist in alphabets for item in sublist])))
+	
+	return global_alphabet
+
+
 def plot_common_ngrams(sequences, ngram_length):
 	"""
 	Plot the number of occurances (per sequence) of ngrams common to a collection of sequences.
@@ -63,7 +118,6 @@ def plot_common_ngrams(sequences, ngram_length):
 
 	return plt
 		
-
 def plot_state_distribution(sequences):
 	"""
 	Creates a state distribution plot based on a collection of sequences.
@@ -123,7 +177,6 @@ def plot_state_distribution(sequences):
 
 	return plt
 
-
 def plot_mean_occurance(sequences):
 	"""
 	Plots the mean number of occurances of each element across a collection of sequences.
@@ -162,43 +215,22 @@ def plot_mean_occurance(sequences):
 	
 	return plt
 
-
-
-def get_modal_state(sequences):
-	
-	longest_sequence = max([len(s) for s in sequences])
-	
-	modal_elements = []
-	for position in range(longest_sequence):
-		
-		elements_at_this_position = []
-		for sequence in sequences:
-			try:
-				elements_at_this_position.append(sequence[position])
-			except:
-				continue
-		
-		# this line leaves multi-modal position behaviour undefined
-		modal_element = max(set(elements_at_this_position), key=elements_at_this_position.count)
-		
-		modal_elements.append((modal_element, elements_at_this_position.count(modal_element)))
-	
-	return modal_elements
-
-
-def get_global_alphabet(sequences):
-	"""
-	Computes the alphabet across all sequences in a collection.
-	"""
-	
-	alphabets = [ps.get_alphabet(s) for s in sequences]
-	
-	global_alphabet = sorted(list(set([item for sublist in alphabets for item in sublist])))
-	
-	return global_alphabet
-
 def plot_modal_state(sequences):
-	
+	"""
+	Plots the modal state for each position in a collection of sequences.
+
+
+	Example
+	--------
+	.. plot::
+
+		>>> s1 = [1,1,1,2,2,3,3]
+		>>> s2 = [1,2,2,2,2,3,3]
+		>>> s3 = [1,1,1,1,2,2,3]
+		>>> sequences = [s1,s2,s3]
+		>>> ps.plot_modal_state(sequences)
+
+	"""
 	modal_elements = get_modal_state(sequences)
 	
 	longest_sequence = max([len(s) for s in sequences])
@@ -220,5 +252,6 @@ def plot_modal_state(sequences):
 	plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 	plt.xlim(-0.5, longest_sequence - 0.5)
 	plt.ylabel('State Frequency, n=' + str(len(sequences)))
+	plt.xlabel('Position')
 	
 	return plt

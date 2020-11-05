@@ -40,11 +40,15 @@ from pysan.multisequence import(
 
     get_common_ngrams,
 
+    get_global_alphabet,
+
     plot_common_ngrams,
 
     plot_state_distribution,
 
     plot_mean_occurance,
+
+    plot_modal_state,
 
     )
 
