@@ -66,6 +66,7 @@ def full_analysis(sequence):
 	
 	return None
 
+
 def get_spells(sequence):
 	"""
 	Returns a list of tuples where each tuple holds the element and the length of the spell (also known as run or episode) for each spell in the sequence.
@@ -107,25 +108,9 @@ def get_longest_spell(sequence):
 			
 			return {'element':element, 'count':count,'start':position_in_sequence}
 
-def get_ntransitions(sequence):
-	"""
-	Computes the number of transitions in a sequence.
-	
-	Example
-	--------
-	>>> sequence = [1,1,1,2,2,3,3,3,4,4]
-	>>> get_ntransitions(sequence)
-	3
-	
-	"""
-	
-	
-	ntransitions = 0
-	for position in range(len(sequence) - 1):
-		if sequence[position] != sequence[position + 1]:
-			ntransitions += 1
-	
-	return ntransitions
+# ====================================================================================
+# STATISTICAL/DESCRIPTIVE FUNCTIONS
+# ====================================================================================
 
 def is_recurrent(sequence):
 	"""
@@ -173,6 +158,26 @@ def first_position_report(sequence):
 		
 	return first_positions
 
+def get_ntransitions(sequence):
+	"""
+	Computes the number of transitions in a sequence.
+	
+	Example
+	--------
+	>>> sequence = [1,1,1,2,2,3,3,3,4,4]
+	>>> get_ntransitions(sequence)
+	3
+	
+	"""
+	
+	
+	ntransitions = 0
+	for position in range(len(sequence) - 1):
+		if sequence[position] != sequence[position + 1]:
+			ntransitions += 1
+	
+	return ntransitions
+
 def get_entropy(sequence):
 	"""
 	Computes the normalised `Shannon entropy <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`_ of a given sequence, using the `scipy.stats.entropy <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.entropy.html>`_ implementation.
@@ -190,13 +195,19 @@ def get_entropy(sequence):
 	"""
 	
 	alphabet = get_alphabet(sequence)
-	
+
 	entropy = 0
 	for state in alphabet:
 		proportion_occurances = sequence.count(state) / len(sequence)
 		entropy += proportion_occurances * math.log(proportion_occurances)
 		
-	return -entropy
+	maximal_occurances = 1 / len(alphabet)
+	alphabet_entropy = sum([maximal_occurances * math.log(maximal_occurances) for x in alphabet])
+		
+	if alphabet_entropy == 0:
+		return 0
+	
+	return -entropy / -alphabet_entropy
 
 def get_distinct_subsequence_count(sequence):
 	"""
@@ -284,7 +295,7 @@ def get_turbulence(sequence):
 def get_complexity(sequence):
 	"""
 	
-	UC Computes the complexity of a given sequence.
+	Computes the complexity of a given sequence, based on TraMineR's `seqici <http://traminer.unige.ch/doc/seqici.html>`_ method.
 	
 
 
@@ -292,31 +303,31 @@ def get_complexity(sequence):
 	
 	alphabet = get_alphabet(sequence)
 
-    pre_log = 1 / len(alphabet)
-    hmax = -math.log(pre_log)
-    #print('hmax', hmax)
-    if hmax == 0:
-        return 0 # all identical elements, no complexity
+	pre_log = 1 / len(alphabet)
+	hmax = -math.log(pre_log)
+	#print('hmax', hmax)
+	if hmax == 0:
+		return 0 # all identical elements, no complexity
 
-    hs = get_entropy(sequence)
-    #print('hs', hs)
+	hs = get_entropy(sequence)
+	#print('hs', hs)
 
-    qs = get_ntransitions(sequence)
-    #print('qs', qs)
+	qs = get_ntransitions(sequence)
+	#print('qs', qs)
 
-    qmax = len(sequence) - 1
-    #print('qmax', qmax)
+	qmax = len(sequence) - 1
+	#print('qmax', qmax)
 
-    norm_transitions = qs / qmax
-    norm_entropy = hs / hmax
+	norm_transitions = qs / qmax
+	norm_entropy = hs / hmax
 
-    #print('nt', norm_transitions)
-    #print('ne', norm_entropy)
+	#print('nt', norm_transitions)
+	#print('ne', norm_entropy)
 
-    complexity = math.sqrt(norm_transitions * norm_entropy)
+	complexity = math.sqrt(norm_transitions * norm_entropy)
 
-    #print('complexity', complexity)
-    return complexity
+	#print('complexity', complexity)
+	return complexity
 	
 
 # ====================================================================================
@@ -463,12 +474,9 @@ def describe(sequence):
 	return details
 
 
-
-
 # ====================================================================================
 # ELEMENT-ORIENTED FUNCTIONS
 # ====================================================================================
-
 
 def get_element_counts(sequence):
 	"""
@@ -553,7 +561,6 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 # ====================================================================================
 # PLOTTING FUNCTIONS
 # ====================================================================================
-
 
 def plot_sequence(sequence, highlighted_ngrams=[]):
 	"""

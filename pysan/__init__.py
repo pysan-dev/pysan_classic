@@ -43,6 +43,8 @@ from pysan.multisequence import(
 
     get_global_alphabet,
 
+    plot_sequences,
+
     plot_common_ngrams,
 
     plot_state_distribution,
@@ -50,6 +52,8 @@ from pysan.multisequence import(
     plot_mean_occurance,
 
     plot_modal_state,
+
+    plot_entropy,
 
     )
 

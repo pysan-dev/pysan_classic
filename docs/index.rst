@@ -38,6 +38,9 @@ Install pysan using the following pip command;
 
 You can also use the very latest version by cloning the github repository.
 
+.. code-block::
+
+	git clone https://github.com/pysan-dev/pysan.git
 
 User Guide
 ===============

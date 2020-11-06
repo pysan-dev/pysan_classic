@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pysan.core as pysan_core
 import itertools
+import numpy as np
 
 def get_common_ngrams(sequences, ngram_length):
 	"""
@@ -75,7 +76,7 @@ def get_modal_state(sequences):
 
 def get_state_frequency(sequences):
 	"""
-	Computes the sequence frequency for each position in a collection of sequences.
+	UC Computes the sequence frequency for each position in a collection of sequences.
 	"""
 
 	pass
@@ -102,7 +103,7 @@ def get_global_alphabet(sequences):
 
 def get_transition_frequencies(sequences):
 	"""
-	Computes the frequency of transitions between states across a collection of sequences.
+	UC Computes the frequency of transitions between states across a collection of sequences.
 
 	"""
 
@@ -135,7 +136,49 @@ def plot_common_ngrams(sequences, ngram_length):
 		pysan_core.plot_sequence(sequence, most_common_ngram)
 
 	return plt
+
+def plot_sequences(sequences):
+	"""
+	Creates a scatter style sequence plot for a collection of sequences.
+
+	Example
+	----------
+	.. plot::
 		
+		>>> s1 = [1,1,1,2,2,3,2,4,4,3,2,1,2,3,3,3,2,2,1,1,1]
+		>>> s2 = [1,1,2,2,3,2,4,4,3,2,1,2,3,2,2,2,3,3,2,4,4]
+		>>> s3 = [1,1,1,2,2,3,2,4,4,3,2,1,2,3,3,3,4,4,4,3,3]
+		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,1,2,2,3,3,3,4,4,4,4]
+		>>> sequences = [s1,s2,s3,s4]
+		>>> ps.plot_sequences(sequences)
+
+	"""
+	max_sequence_length = max([len(s) for s in sequences])
+	plt.figure(figsize=[max_sequence_length*0.3,0.3 * len(sequences)])
+	
+	for y,sequence in enumerate(sequences):
+		np_sequence = np.array(sequence)
+		alphabet_len = len(pysan_core.get_alphabet(sequence))
+		
+		plt.gca().set_prop_cycle(None)
+		unique_values = pysan_core.get_alphabet(sequence)
+		for i, value in enumerate(unique_values):
+			points = np.where(np_sequence == value, y + 1, np.nan)
+
+			plt.scatter(x=range(len(np_sequence)), y=points, marker='s', label=value, s=100)
+
+	plt.ylim(0.4, len(sequences) + 0.6)
+	handles, labels = plt.gca().get_legend_handles_labels()
+	by_label = dict(zip(labels, handles))
+	plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.0, 1.1), loc='upper left')
+	plt.tick_params(
+		axis='y',
+		which='both',
+		left=False,
+		labelleft=False)
+
+	return plt
+
 def plot_state_distribution(sequences):
 	"""
 	Creates a state distribution plot based on a collection of sequences.
@@ -282,13 +325,37 @@ def plot_modal_state(sequences):
 	
 	return plt
 
-
-def plot_entropy(sequence):
+def plot_entropy(sequences):
 	"""
-	
-	UC Plots the entropy of a collection of sequences at each position over time.
-	
+	Plots the entropy at each position across a collection of sequences.
 
+	Example
+	----------
+	.. plot::
+
+		>>> s1 = [1,1,1,2,2,3,2,4,4,3,2,1,2,3,3,3,2,2,1,1,1]
+		>>> s2 = [1,1,2,2,3,2,4,4,3,2,1,2,3,2,2,2,3,3,2,4,4]
+		>>> s3 = [2,2,1,1,2,3,2,4,4,3,2,1,2,3,3,3,4,4,4,3,4]
+		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,1,2,2,3,3,3,4,4,4,3]
+		>>> sequences = [s1,s2,s3,s4]
+		>>> ps.plot_entropy(sequences)
 
 	"""
-	pass
+
+	longest_sequence = max([len(s) for s in sequences])
+
+	entropies = []
+	for position in range(longest_sequence):
+
+		this_position_crosssection = [sequence[position] for sequence in sequences]
+
+		entropy = pysan_core.get_entropy(this_position_crosssection)
+
+		entropies.append(entropy)
+
+	plt.ylim(0,1)
+	plt.plot(range(len(entropies)), entropies)
+	plt.xlabel('Position, p')
+	plt.ylabel('Normalised Entropy, e')
+
+	return plt
