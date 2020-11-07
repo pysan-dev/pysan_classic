@@ -6,21 +6,19 @@
 Welcome
 =================================
 
-`pysan <https://github.com/pysan-dev/pysan>`_ is a library of methods for doing `social sequence analysis <https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88>`_ using Python. All of the code is open source, and each method is fully documented with examples! Keep scrolling to learn more.
+`pysan <https://github.com/pysan-dev/pysan>`_ is a library of methods for doing `sequence analysis <https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88>`_ using Python. All of the code is open source, and each method is fully documented with examples! Keep scrolling to learn more.
 
 .. raw:: html
 	
 	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-	<p><a href='https://github.com/pysan-dev/pysan'><i class="fab fa-2x fa-github"></i> Fork on GitHub</a></p>
-	
-	<p><a href='https://github.com/pysan-dev/pysan'><i class="fab fa-2x fa-python"></i> Install with PyPI</a></p>
+	<p class='links'> <a href='https://github.com/pysan-dev/pysan'><img src="https://img.shields.io/badge/-Visit%20Repo-grey?style=for-the-badge&logo=github"></a> <a href='https://pypi.org/project/PySAN/'><img src="https://img.shields.io/badge/-Download%20Package-grey?style=for-the-badge&logo=python&logoColor=white"></a></p>
 
 .. image:: _images/plot_sequence.png
 
 
 Why use pysan?
 ===============
-Lots of events in the natural world happen in a particular order, from making a cup of tea, to getting job promotions, and so on.
+Lots of events in the natural world happen in a particular order, from making a cup of tea, to getting promotions, and so on.
 In science, this applies to everything from communication data, to consumer spending, and to gambling behaviour.
 Analysing these events whilst preserving their sequential order requires analysis in the sequence domain.
 `pysan <https://github.com/pysan-dev/pysan>`_ contains methods for visualising, comparing, and dissecting sequences, helping you develop insights into your sequences with only a few lines of code.

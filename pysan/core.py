@@ -209,7 +209,7 @@ def get_entropy(sequence):
 	
 	return -entropy / -alphabet_entropy
 
-def get_distinct_subsequence_count(sequence):
+def get_ndistinct_subsequences(sequence):
 	"""
 	Computes the number of distinct subsequences for a given sequence, based on original implementation by 
 	Mohit Kumar available `here <https://www.geeksforgeeks.org/count-distinct-subsequences/>`_.
@@ -217,7 +217,7 @@ def get_distinct_subsequence_count(sequence):
 	Example
 	--------
 	>>> sequence = [1,2,1,3]
-	>>> ps.get_distinct_subsequence_count(sequence)
+	>>> ps.get_ndistinct_subsequences(sequence)
 	14
 	
 	"""
@@ -264,7 +264,7 @@ def get_turbulence(sequence):
 
 	"""
 
-	phi = get_distinct_subsequence_count(sequence)
+	phi = get_ndistinct_subsequences(sequence)
 
 	#print('phi', phi)
 
