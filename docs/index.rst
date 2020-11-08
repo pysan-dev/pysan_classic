@@ -6,14 +6,14 @@
 Welcome
 =================================
 
-`pysan <https://github.com/pysan-dev/pysan>`_ is a library of methods for doing `sequence analysis <https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88>`_ using Python. All of the code is open source, and each method is fully documented with examples! Keep scrolling to learn more.
+`pysan <https://github.com/pysan-dev/pysan>`_ is a library of methods for doing `sequence analysis <https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88>`_ using Python. It's free, open source, and each method is fully documented with examples. Using `pysan <https://github.com/pysan-dev/pysan>`_ you'll be able to run powerful sequence analysis and visualisation tasks with just a few lines of code, and integrate or extend them into your other Python workflows.
+
+.. image:: index-11.png
 
 .. raw:: html
 	
-	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-	<p class='links'> <a href='https://github.com/pysan-dev/pysan'><img src="https://img.shields.io/badge/-Visit%20Repo-grey?style=for-the-badge&logo=github"></a> <a href='https://pypi.org/project/PySAN/'><img src="https://img.shields.io/badge/-Download%20Package-grey?style=for-the-badge&logo=python&logoColor=white"></a></p>
+	<p class='links'> <a href='https://github.com/pysan-dev/pysan'><img src="https://img.shields.io/badge/-Visit%20Repo-grey?style=for-the-badge&logo=github"></a> <a href='https://pypi.org/project/PySAN/'><img src="https://img.shields.io/badge/-Download%20Package-grey?style=for-the-badge&logo=python&logoColor=white"></a> <a href='https://pypi.org/project/PySAN/'><img src="https://img.shields.io/badge/-Share%20Project-grey?style=for-the-badge&logo=twitter&logoColor=white"></a></p>
 
-.. image:: _images/plot_sequence.png
 
 
 Why use pysan?
@@ -21,7 +21,7 @@ Why use pysan?
 Lots of events in the natural world happen in a particular order, from making a cup of tea, to getting promotions, and so on.
 In science, this applies to everything from communication data, to consumer spending, and to gambling behaviour.
 Analysing these events whilst preserving their sequential order requires analysis in the sequence domain.
-`pysan <https://github.com/pysan-dev/pysan>`_ contains methods for visualising, comparing, and dissecting sequences, helping you develop insights into your sequences with only a few lines of code.
+The pysan library contains methods for visualising, comparing, and dissecting sequences, helping you develop insights into your sequences with only a few lines of code.
 
 To find out more about sequence analysis using pysan, continue reading down this page, starting with how to install the latest version from PyPI.
 
@@ -54,7 +54,7 @@ Loading Sequence Data
 -----------------------
 If you're familiar with python, load your sequences in as lists.
 All methods in pysan accept a single list, or a list of lists, as input.
-Each sequence should be loaded as one list.
+Each sequence should be represented as one list, encoded into integers.
 If you're using multi-channel data, each position in your list should be a tuple, with each tuple containing the elements in each channel.
 
 .. ipython:: python
@@ -148,8 +148,15 @@ Method Documentation
 
 
 
-More Resources
+Useful Links
 ------------------
 
-The Sequence Analysis Association's website has a `list of sequence analysis publications <https://www.zotero.org/groups/2268769/saa_bibliography/library>`_, and sequence analysis `software in other languages <https://sequenceanalysis.org/softwares/>`_.
-The book titled Social Sequence Analysis by Benjamin Cornwell is a great introduction to the field, and was the inspiration for writing this library.
+`Sequence Analysis Association <https://sequenceanalysis.org/>`_ (SAA)
+
+`SAA publication library <https://www.zotero.org/groups/2268769/saa_bibliography/library>`_
+
+`SAA software library <https://sequenceanalysis.org/softwares/>`_.
+
+`Social Sequence Analysis by Benjamin Cornwell <https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88>`_
+
+`TraMineR sequence analysis package <http://traminer.unige.ch/>`_

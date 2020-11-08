@@ -74,12 +74,35 @@ def get_modal_state(sequences):
 	
 	return modal_elements
 
-def get_state_frequency(sequences):
+def get_sequence_frequencies(sequences):
 	"""
-	UC Computes the sequence frequency for each position in a collection of sequences.
+	Computes the frequencies of different sequences in a collection, returning a dictionary of their string representations and counts.
+	
+	Example
+	--------
+	
+	.. plot::
+	
+		>>> s1 = [1,1,2,2,3]
+		>>> s2 = [1,2,2,3,3]
+		>>> s3 = [1,1,2,2,2]
+		>>> sequences = [s1,s2,s2,s3,s3,s3]
+		>>> ps.get_sequence_frequencies(sequences)
+		{'[1, 1, 2, 2, 2]': 3, 
+		 '[1, 2, 2, 3, 3]': 2, 
+		 '[1, 1, 2, 2, 3]': 1}
 	"""
-
-	pass
+	
+	# converting to strings makes comparison easy
+	sequences_as_strings = [str(s) for s in sequences]
+	
+	sequence_frequencies = {}
+	for sequence in set(sequences_as_strings):
+		sequence_frequencies[sequence] = sequences_as_strings.count(sequence)
+	
+	sequence_frequencies = {k: v for k, v in sorted(sequence_frequencies.items(), key=lambda item: item[1], reverse=True)}
+	
+	return sequence_frequencies
 
 def get_global_alphabet(sequences):
 	"""
@@ -102,13 +125,69 @@ def get_global_alphabet(sequences):
 	return global_alphabet
 
 def get_transition_frequencies(sequences):
+    """
+    
+    Example
+    --------
+    .. plot::
+    
+        >>> s1 = [1,1,1,2,2,3,3,4,4,3,2,2,2,3,3,3,2,2,1,1,1]
+        >>> s2 = [1,1,2,2,3,2,4,4,3,2,2,2,3,2,2,2,3,3,3,4,4]
+        >>> s3 = [1,1,1,2,2,3,3,3,4,3,2,2,2,3,3,3,4,4,4,3,3]
+        >>> s4 = [1,1,1,1,2,3,2,3,3,3,3,2,2,2,3,3,3,4,4,4,4]
+        >>> sequences = [s1,s2,s3,s4]
+        {'[2, 3]': 10,
+         '[3, 2]': 8,
+         '[3, 4]': 5,
+         '[4, 3]': 4,
+         '[1, 2]': 4,
+         '[2, 4]': 1,
+         '[2, 1]': 1}
+    """
+    
+    all_transitions = []
+    for sequence in sequences:
+        all_transitions += pysan_core.get_transitions(sequence)
+
+        
+    all_transitions_as_strings = [str(t) for t in all_transitions]
+    transition_frequencies = {}
+    
+    for transition in set(all_transitions_as_strings):
+        transition_frequencies[str(transition)] = all_transitions_as_strings.count(transition)
+    
+    transition_frequencies = {k: v for k, v in sorted(transition_frequencies.items(), key=lambda item: item[1], reverse=True)}
+    
+    return transition_frequencies
+
+def get_synchrony(sequences):
 	"""
-	UC Computes the frequency of transitions between states across a collection of sequences.
-
+	Computes the normalised synchrony between a two or more sequences. 
+	Synchrony here refers to positions with identical elements, e.g. two identical sequences have a synchrony of 1, two completely different sequences have a synchrony of 0.
+	This computation is defined in Cornwell's 2015 book on social sequence analysis, page 230.
+	
+	Example
+	--------
+	>>> s1 = [1,1,2,2,3]
+	>>> s2 = [1,2,2,3,3]
+	>>> sequences = [s1,s2]
+	>>> ps.get_synchrony(sequences)
+	0.6
+	
 	"""
-
-	pass
-
+	
+	shortest_sequence = min([len(s) for s in sequences])
+	
+	same_elements = []
+	for position in range(shortest_sequence):
+	
+		elements_at_this_position = []
+		for sequence in sequences:
+			elements_at_this_position.append(sequence[position])
+			
+		same_elements.append(elements_at_this_position.count(elements_at_this_position[0]) == len(elements_at_this_position))
+		
+	return same_elements.count(True) / shortest_sequence
 
 # ============= MULTISEQUENCE PLOTTING ===============
 
@@ -137,37 +216,48 @@ def plot_common_ngrams(sequences, ngram_length):
 
 	return plt
 
-def plot_sequences(sequences):
+def plot_sequences(sequences, gap=True):
 	"""
 	Creates a scatter style sequence plot for a collection of sequences.
 
 	Example
 	----------
 	.. plot::
-		
+
 		>>> s1 = [1,1,1,2,2,3,2,4,4,3,2,1,2,3,3,3,2,2,1,1,1]
 		>>> s2 = [1,1,2,2,3,2,4,4,3,2,1,2,3,2,2,2,3,3,2,4,4]
 		>>> s3 = [1,1,1,2,2,3,2,4,4,3,2,1,2,3,3,3,4,4,4,3,3]
 		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,1,2,2,3,3,3,4,4,4,4]
 		>>> sequences = [s1,s2,s3,s4]
 		>>> ps.plot_sequences(sequences)
+		>>> ps.plot_sequences(sequences, gap=False)
 
 	"""
 	max_sequence_length = max([len(s) for s in sequences])
 	plt.figure(figsize=[max_sequence_length*0.3,0.3 * len(sequences)])
-	
+
 	for y,sequence in enumerate(sequences):
 		np_sequence = np.array(sequence)
 		alphabet_len = len(pysan_core.get_alphabet(sequence))
-		
+
 		plt.gca().set_prop_cycle(None)
 		unique_values = pysan_core.get_alphabet(sequence)
 		for i, value in enumerate(unique_values):
-			points = np.where(np_sequence == value, y + 1, np.nan)
+			
+			if gap:
+				points = np.where(np_sequence == value, y + 1, np.nan)
+				plt.scatter(x=range(len(np_sequence)), y=points, marker='s', label=value, s=100)
+			else:
+				points = np.where(np_sequence == value, 1, np.nan)
+				plt.bar(range(len(points)), points, bottom=[y for x in range(len(points))], width=1, align='edge', label=i)
 
-			plt.scatter(x=range(len(np_sequence)), y=points, marker='s', label=value, s=100)
-
-	plt.ylim(0.4, len(sequences) + 0.6)
+	if gap:
+		plt.ylim(0.4, len(sequences) + 0.6)
+		plt.xlim(-0.6, max_sequence_length - 0.4)
+	else:
+		plt.ylim(0,len(sequences))
+		plt.xlim(0,max_sequence_length)
+		
 	handles, labels = plt.gca().get_legend_handles_labels()
 	by_label = dict(zip(labels, handles))
 	plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.0, 1.1), loc='upper left')
@@ -187,10 +277,11 @@ def plot_state_distribution(sequences):
 	--------
 	.. plot::
 
-		>>> s1 = [1,1,1,1,1,2,2,2,2,3,3,3]
-		>>> s2 = [1,1,1,2,2,2,2,2,3,3,3,3]
-		>>> s3 = [1,1,2,2,2,2,3,3,3,3,2,3]
-		>>> sequences = [s1,s2,s3]
+		>>> s1 = [1,1,1,2,2,3,3,4,4,3,2,2,2,3,3,3,2,2,1,1,1]
+		>>> s2 = [1,1,2,2,3,2,4,4,3,2,2,2,3,2,2,2,3,3,3,4,4]
+		>>> s3 = [1,1,1,2,2,3,3,3,4,3,2,2,2,3,3,3,4,4,4,3,3]
+		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,2,2,2,3,3,3,4,4,4,4]
+		>>> sequences = [s1,s2,s3,s4]
 		>>> ps.plot_state_distribution(sequences)
 	
 	"""
@@ -217,34 +308,86 @@ def plot_state_distribution(sequences):
 
 				try: # this try is for sequences of non-identical lengths
 					if sequence[position] == element:
-						elements_this_position += 1
+						elements_this_position += 1 / len(sequences)
 				except:
 					continue
 
 			element_position_counts.append(elements_this_position)
 
-		plt.bar(range(longest_sequence), element_position_counts, bottom=previous_bar_tops, label=element, width=1)
+		plt.bar(range(longest_sequence), element_position_counts, bottom=previous_bar_tops, label=element, width=1, align='edge')
 		previous_bar_tops = [a + b for a, b in zip(previous_bar_tops, element_position_counts)]
 
 	plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-	plt.xlim(-0.5, longest_sequence - 0.5)
-	plt.tick_params(
-		axis='y',
-		which='both',
-		left=False,
-		labelleft=False)
+	plt.xlim(0, longest_sequence)
 
+	plt.ylabel('Frequency (n=' + str(len(sequence)) + ')')
 	plt.xlabel('Position')
 
 	return plt
 
-def plot_sequence_frequency(sequences):
+def plot_sequence_frequencies(sequences):
 	"""
-	UC Creates a sequence frequency plot for a collection of sequences.
+	Plots sequences using :meth:`plot_sequences`, ordering sequences with the most common at the bottom, and the rarest at the top. This is most useful when comparing short sequences.
+	
+	Example
+	---------
+	.. plot::
+	
+		>>> s1 = [1,1,1,2,2,3,3,2,2,3,2,2,2,3,3,3,2,2,1,1,1]
+		>>> s2 = [1,1,2,2,3,2,4,4,3,2,2,2,3,2,2,2,3,3,3,4,4]
+		>>> s3 = [1,1,1,2,2,3,3,3,4,3,2,2,2,3,3,3,4,4,4,3,3]
+		>>> sequences = [s1,s2,s2,s3,s3,s3]
+		>>> ps.plot_sequence_frequencies(sequences)
 
 	"""
+	frequencies = get_sequence_frequencies(sequences)
+	
+	raw_sequences_ordered = []
+	for sequence, count in frequencies.items():
+		for x in range(count):
+			raw_sequences_ordered.append(eval(sequence))
+			
+	plt = plot_sequences(raw_sequences_ordered, gap=False)
+	
+	plt.tick_params(
+		axis='y',
+		which='both',
+		left=True,
+		labelleft=True)
+	
+	plt.yticks([0, len(sequences) * 0.25, len(sequences) * 0.5, len(sequences) * 0.75, len(sequences)], [0,25,50,75,100])
+	plt.ylabel('Frequency (%)')
+	plt.xlabel('Position')
+	
+	return plt
 
-	pass
+def plot_transition_frequencies(sequences):
+	"""
+	Creates a transition frequency plot for each transition in a collection of sequences.
+
+	Example
+	--------
+	.. plot::
+
+		>>> s1 = [1,1,1,2,2,3,3,4,4,3,2,2,2,3,3,3,2,2,1,1,1]
+		>>> s2 = [1,1,2,2,3,2,4,4,3,2,2,2,3,2,2,2,3,3,3,4,4]
+		>>> s3 = [1,1,1,2,2,3,3,3,4,3,2,2,2,3,3,3,4,4,4,3,3]
+		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,2,2,2,3,3,3,4,4,4,4]
+		>>> sequences = [s1,s2,s3,s4]
+		>>> ps.plot_transition_frequencies(sequences)
+	"""    
+
+	transition_frequencies = get_transition_frequencies(sequences)
+
+	transitions = [key.replace(', ', '>') for key, v in transition_frequencies.items()]
+	counts = [value for k, value in transition_frequencies.items()]
+
+	plt.bar(transitions, counts)
+	plt.xlim(-0.6, len(transitions) - 0.4)
+	plt.ylabel('Number of Transitions')
+	plt.xlabel('State Transitions')
+
+	return plt
 
 def plot_mean_occurance(sequences):
 	"""
@@ -316,10 +459,11 @@ def plot_modal_state(sequences):
 				modal_element_counts.append(modal_elements[position][1] / len(sequences))
 			else:
 				modal_element_counts.append(0)
-		plt.bar(range(longest_sequence), modal_element_counts, label=element, width=1)
+		plt.bar(range(longest_sequence), modal_element_counts, label=element, width=1, align='edge')
 		
 	plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-	plt.xlim(-0.5, longest_sequence - 0.5)
+	plt.xlim(0, longest_sequence)
+	plt.ylim(0, 1)
 	plt.ylabel('State Frequency, n=' + str(len(sequences)))
 	plt.xlabel('Position')
 	

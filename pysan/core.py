@@ -8,6 +8,7 @@ import itertools
 import scipy.stats
 import math
 import statistics
+import pysan.multisequence as pysan_ms
 
 random.seed('12345')
 
@@ -108,6 +109,25 @@ def get_longest_spell(sequence):
 			
 			return {'element':element, 'count':count,'start':position_in_sequence}
 
+def get_transitions(sequence):
+	"""
+	Extracts a list of transitions from a sequence, returning a list of lists containing each transition.
+
+	Example
+	--------
+	>>> sequence = [1,2,2,1,2,3,2,3,1]
+	>>> ps.get_transitions(sequence)
+	[[1, 2], [2, 1], [1, 2], [2, 3], [3, 2], [2, 3], [3, 1]
+
+	"""
+
+	transitions = []
+	for position in range(len(sequence) - 1):
+		if sequence[position] != sequence[position + 1]:
+			transitions.append([sequence[position], sequence[position + 1]])
+
+	return transitions
+
 # ====================================================================================
 # STATISTICAL/DESCRIPTIVE FUNCTIONS
 # ====================================================================================
@@ -170,13 +190,7 @@ def get_ntransitions(sequence):
 	
 	"""
 	
-	
-	ntransitions = 0
-	for position in range(len(sequence) - 1):
-		if sequence[position] != sequence[position + 1]:
-			ntransitions += 1
-	
-	return ntransitions
+	return len(get_transitions(sequence))
 
 def get_entropy(sequence):
 	"""
@@ -329,6 +343,27 @@ def get_complexity(sequence):
 	#print('complexity', complexity)
 	return complexity
 	
+def get_routine(sequence, duration):
+	"""
+	Computes a normalised measure of routine within a sequence for a given duration within that sequence.
+	E.g. with a sequence where each element is one day, calling get_routine() with a duration of 7 would look at weekly routines.
+	Note that this routine measure is identical to the multisequence measure of synchrony, but applied within-sequence in duration length chunks.
+	
+	Example
+	>>> sequence = [1,1,2,2,3,1,1,2,3,2,1,1,3,2,2]
+	>>> ps.get_routine(sequence, 5)
+	0.4
+	
+	"""
+	
+	if len(sequence) % duration != 0:
+		raise Exception('sequence not divisible by interval, check data input')
+	
+	num_cycles = int(len(sequence) / duration)
+	cycles = [sequence[n * duration:n * duration + duration] for n in range(num_cycles)]
+	
+	return pysan_ms.get_synchrony(cycles)
+
 
 # ====================================================================================
 # NGRAM FUNCTIONS
@@ -406,7 +441,6 @@ def get_ngram_universe(sequence, n):
 	if k > 10 and n > 10:
 		return 'really big'
 	return k**n
-
 
 def get_ngram_counts(sequence, n):
 	"""
@@ -527,11 +561,10 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 	----------
 	>>> sequence = [1,2,2,1,2,3,2,3,1]
 	>>> ps.get_transition_matrix(sequence)
-		cook  exercise  sleep
-	cook       0.0       0.0    1.0
-	exercise   2.0       0.0    0.0
-	sleep      0.0       1.0    1.0
-
+		->1 	->2 	->3
+	1-> 	0.0 	2.0 	0.0
+	2-> 	1.0 	1.0 	2.0
+	3-> 	1.0 	1.0 	0.0
 	"""
 	if alphabet == None:
 		alphabet = get_alphabet(sequence)
@@ -635,6 +668,40 @@ def plot_sequence(sequence, highlighted_ngrams=[]):
 			for ngram in highlighted_ngrams:
 				highlight_ngram(ngram)
 
+	return plt
+
+def plot_sequence_1d(sequence, flat=False):
+	"""
+	Plots a sequence in one dimension - useful for stacking multiple sequences above one another.
+	
+	Example
+	---------    
+	>>> sequence = [1,1,1,2,2,2,3,1,3,2,2,2,4,4,1,1,1,1,2,1,1]
+	>>> plot_sequence_1d(sequence)
+	
+	"""
+	
+	np_sequence = np.array(sequence)
+	alphabet_len = len(ps.get_alphabet(sequence))
+
+	plt.figure(figsize=[len(sequence)*0.4, 0.5])
+
+	unique_values = list(set(sequence))
+	for i, value in enumerate(unique_values):
+
+		points = np.where(np_sequence == value, 1, np.nan)
+		
+		plt.bar(range(len(points)), points, width=1, align='edge', label=i)
+	
+	plt.ylim(-0.3, 1.3)
+	plt.tick_params(
+		axis='y',
+		which='both',
+		left=False,
+		labelleft=False)
+	plt.xlabel('Position, p')
+	plt.legend(bbox_to_anchor=(1, 1.2), loc='upper left')
+	
 	return plt
 
 def plot_element_counts(sequence):

@@ -48,12 +48,14 @@ div.related.top{
 	font-size: 200%;
 	margin-bottom: 0;
 	padding-bottom: 0;
+	padding-left: 10px;
 }
 h3.subtitle{
 	font-family: 'Roboto Mono';
 	margin-top: 0;
 	font-size: 14px;
 	color: white;
+	padding-left: 10px;
 }
 
 .section{
@@ -94,8 +96,15 @@ pre{
 	padding: 10px;
 }
 
-img{
+div img{
+	display: block;
 	vertical-align: middle;
+	text-align: center;
+	margin: 0 auto;
+	max-width: 100%;
+}
+a img{
+	display: inherit;
 }
 
 p.links{

@@ -14,10 +14,12 @@ from pysan.core import(
 
     get_spells,
     get_longest_spell,
+    get_transitions,
     is_recurrent,
     get_entropy,
-    get_distinct_subsequence_count,
+    get_ndistinct_subsequences,
     get_turbulence,
+    get_routine,
 
 
     get_all_ngrams,
@@ -42,6 +44,9 @@ from pysan.multisequence import(
     get_common_ngrams,
 
     get_global_alphabet,
+    get_sequence_frequencies,
+    get_transition_frequencies,
+    get_synchrony,
 
     plot_sequences,
 
@@ -49,10 +54,10 @@ from pysan.multisequence import(
 
     plot_state_distribution,
 
+    plot_sequence_frequencies,
+    plot_transition_frequencies,
     plot_mean_occurance,
-
     plot_modal_state,
-
     plot_entropy,
 
     )
