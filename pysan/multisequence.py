@@ -189,6 +189,36 @@ def get_synchrony(sequences):
 		
 	return same_elements.count(True) / shortest_sequence
 
+def get_dissimilarity(sequences, function):
+	"""
+	Computes a dissimilarity matrix using a given function.
+	This function is applied pairwise between all sequences in the collection provided.
+	This function can be used abstractly for all kinds of pairwise measures.
+	
+	Example
+	---------
+	>>> s1 = [1,1,2,2,3]
+	>>> >>> s2 = [1,2,2,3,3]
+	>>> s3 = [1,1,2,2,2]
+	>>> sequences = [s1,s2,s3]
+	>>> ps.get_dissimilarity(sequences, ps.get_synchrony)
+	array([[1. , 0.6, 0.8],
+		   [0.6, 1. , 0.4],
+		   [0.8, 0.4, 1. ]])
+	
+	"""
+	
+	num_sequences = len(sequences)
+	scores = np.zeros((num_sequences,num_sequences),dtype = float)
+	
+	
+	for row in range(num_sequences):
+		for column in range(num_sequences):
+			score = function([sequences[row], sequences[column]])
+			scores[row,column] = score
+	
+	return scores
+
 # ============= MULTISEQUENCE PLOTTING ===============
 
 

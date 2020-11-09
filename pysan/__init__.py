@@ -47,6 +47,7 @@ from pysan.multisequence import(
     get_sequence_frequencies,
     get_transition_frequencies,
     get_synchrony,
+    get_dissimilarity,
 
     plot_sequences,
 
