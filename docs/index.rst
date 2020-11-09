@@ -23,6 +23,9 @@ In science, this applies to everything from communication data, to consumer spen
 Analysing these events whilst preserving their sequential order requires analysis in the sequence domain.
 The pysan library contains methods for visualising, comparing, and dissecting sequences, helping you develop insights into your sequences with only a few lines of code.
 
+**Why Python?** - Python is quickly becoming *the* go-to language for data analysis across a number of research areas.
+By writing a sequence analysis library in Python, analysts can take advantage of other tools written in Python, whilst writing simple and readable code.
+
 To find out more about sequence analysis using pysan, continue reading down this page, starting with how to install the latest version from PyPI.
 
 

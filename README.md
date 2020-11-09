@@ -1,6 +1,6 @@
 # **pysan**: social sequence analysis in Python
 
-**pysan** is a library of methods for performing basic social sequence analysis using Python.
+**pysan** is a library of methods for sequence analysis using Python.
 
 ## What it does
 - sequence visualisation
@@ -10,7 +10,7 @@
 - entropy and turbulence (coming soon)
 
 ## Documentation
-Documentation is currently hosted at [pysan.gamba.dev](https://pysan.gamba.dev)
+Documentation is currently hosted at [pysan.org](https://pysan.org)
 
 ## About
 **pysan** was created as a hobbyist project by [Oliver Scholten](https://twitter.com/ojscholten) after reading *[Social Sequence Analysis: Methods and Applications by Benjamin Cornwell](https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88)*. It's not meant as a state of the art scientific package, but more of a reliable workhorse for preliminary investigations and small projects.
