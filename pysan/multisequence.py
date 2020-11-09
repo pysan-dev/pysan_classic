@@ -160,10 +160,45 @@ def get_transition_frequencies(sequences):
     
     return transition_frequencies
 
+def get_motif(sequences):
+	"""
+	Computes the motif for a given collection of sequences.
+	A motif is a representative sequence for all sequences in a collection, with blank values (0) being those which are variable within the collection, and fixed values which are not.
+	Motifs are related to the measure of synchrony in that synchrony is equal to the number of non-blank elements in the motif.
+	
+	Example
+	--------
+	
+	>>> s1 = [1,1,2,2,3]
+	>>> s2 = [1,2,2,3,3]
+	>>> s3 = [1,1,2,2,2]
+	>>> sequences = [s1,s2,s3]
+	>>> get_motif(sequences)
+	[1, 0, 2, 0, 0]
+	
+	"""
+	
+	shortest_sequence = min([len(s) for s in sequences])
+	
+	same_elements = []
+	for position in range(shortest_sequence):
+	
+		elements_at_this_position = []
+		for sequence in sequences:
+			elements_at_this_position.append(sequence[position])
+	
+		if elements_at_this_position.count(elements_at_this_position[0]) == len(elements_at_this_position):
+			same_elements.append(sequences[0][position])
+		else:
+			same_elements.append(0)
+	
+	return same_elements
+
 def get_synchrony(sequences):
 	"""
 	Computes the normalised synchrony between a two or more sequences. 
 	Synchrony here refers to positions with identical elements, e.g. two identical sequences have a synchrony of 1, two completely different sequences have a synchrony of 0.
+	The value is normalised by dividing by the number of positions compared.
 	This computation is defined in Cornwell's 2015 book on social sequence analysis, page 230.
 	
 	Example
