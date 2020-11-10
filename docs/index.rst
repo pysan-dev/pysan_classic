@@ -3,12 +3,25 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
+.. meta::
+	:twitter\:card: summary_large_image
+	:twitter\:site: @ojscholten
+	:twitter\:title: pysan\: Sequence Analysis in Python
+	:twitter\:description: The pysan library is a free and open source collection of methods for doing sequence analysis. Get started now 
+	:twitter\:image: https://pysan.org/pysan.png
+
+.. container:: notice
+
+	**Please note: pysan is currently in beta - parts of this page may be incomplete**
+
+
 Welcome
 =================================
 
 `pysan <https://github.com/pysan-dev/pysan>`_ is a library of methods for doing `sequence analysis <https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88>`_ using Python. It's free, open source, and each method is fully documented with examples. Using `pysan <https://github.com/pysan-dev/pysan>`_ you'll be able to run powerful sequence analysis and visualisation tasks with just a few lines of code, and integrate or extend them into your other Python workflows.
 
-.. image:: index-11.png
+.. image:: index-14_00.png
 
 .. raw:: html
 	

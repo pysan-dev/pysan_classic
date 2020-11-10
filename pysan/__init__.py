@@ -5,10 +5,9 @@ from pysan.core import(
 	generate_sequence,
 	describe,
     full_analysis,
+    first_position_report,
 
     get_alphabet,
-
-
     get_element_counts,
     get_element_frequency,
 
@@ -47,6 +46,7 @@ from pysan.multisequence import(
     get_sequence_frequencies,
     get_transition_frequencies,
     get_motif,
+    get_modal_state,
     get_synchrony,
     get_dissimilarity,
 

@@ -67,7 +67,6 @@ def full_analysis(sequence):
 	
 	return None
 
-
 def get_spells(sequence):
 	"""
 	Returns a list of tuples where each tuple holds the element and the length of the spell (also known as run or episode) for each spell in the sequence.
@@ -117,7 +116,7 @@ def get_transitions(sequence):
 	--------
 	>>> sequence = [1,2,2,1,2,3,2,3,1]
 	>>> ps.get_transitions(sequence)
-	[[1, 2], [2, 1], [1, 2], [2, 3], [3, 2], [2, 3], [3, 1]
+	[[1, 2], [2, 1], [1, 2], [2, 3], [3, 2], [2, 3], [3, 1]]
 
 	"""
 
@@ -139,16 +138,16 @@ def is_recurrent(sequence):
 	Example
 	---------
 	>>> sequence = [1,2,3,4,5]
-	>>> is_recurrent(sequence)
+	>>> ps.is_recurrent(sequence)
 	False
 	>>> sequence = [1,1,2,2,3]
-	>>> is_recurrent(sequence)
+	>>> ps.is_recurrent(sequence)
 	True
 
 
 	"""
 	
-	element_counts = ps.get_element_counts(sequence)
+	element_counts = get_element_counts(sequence)
 	
 	truths = [count > 1 for element, count in element_counts.items()]
 	
@@ -165,7 +164,7 @@ def first_position_report(sequence):
 	Example
 	---------
 	>>> sequence = [1,1,2,3,4]
-	>>> first_position_report(sequence)
+	>>> ps.first_position_report(sequence)
 	{1: 0, 2: 2, 3: 3, 4: 4}
 
 
@@ -185,7 +184,7 @@ def get_ntransitions(sequence):
 	Example
 	--------
 	>>> sequence = [1,1,1,2,2,3,3,3,4,4]
-	>>> get_ntransitions(sequence)
+	>>> ps.get_ntransitions(sequence)
 	3
 	
 	"""
@@ -376,7 +375,7 @@ def get_unique_ngrams(sequence, n):
 	Example
 	---------
 	>>> sequence = [2,1,1,4,2,2,3,4,2,1,1]
-	>>> ps.get_unique_ngrams(sequence, 3)
+	>>> ps.get_unique_ngrams(sequence, 3) #doctest: +NORMALIZE_WHITESPACE
 	[[2, 1, 1],
 	 [1, 1, 4],
 	 [1, 4, 2],
@@ -405,7 +404,7 @@ def get_all_ngrams(sequence, n):
 	Example
 	---------
 	>>> sequence = [2,1,1,4,2,2,3,4,2,1,1]
-	>>> ps.get_unique_ngrams(sequence, 3)
+	>>> ps.get_unique_ngrams(sequence, 3) #doctest: +NORMALIZE_WHITESPACE
 	[[2, 1, 1],
 	 [1, 1, 4],
 	 [1, 4, 2],
@@ -413,8 +412,7 @@ def get_all_ngrams(sequence, n):
 	 [2, 2, 3],
 	 [2, 3, 4],
 	 [3, 4, 2],
-	 [4, 2, 1],
-	 [2, 1, 1]]
+	 [4, 2, 1]]
 
 	"""
 	
@@ -456,7 +454,7 @@ def get_ngram_counts(sequence, n):
 	Example
 	---------
 	>>> sequence = [2,1,1,4,2,2,3,4,2,1,1]
-	>>> ps.get_ngram_counts(sequence, 3)
+	>>> ps.get_ngram_counts(sequence, 3) #doctest: +NORMALIZE_WHITESPACE
 	{'[2, 1, 1]': 2,
 	 '[1, 1, 4]': 1,
 	 '[1, 4, 2]': 1,
@@ -486,14 +484,14 @@ def describe(sequence):
 	Example
 	---------
 	>>> sequence = [1,1,2,1,2,2,3,4,2]
-	>>> ps.describe(sequence)
-	{'length': 9,
-	'alphabet': {1, 2, 3, 4},
-	'sequence_universe': 262144,
-	'unique_bigrams': 6,
-	'bigram_universe': 16,
-	'ntransitions': 6,
-	'entropy': 0.876357...}
+	>>> ps.describe(sequence) #doctest: +NORMALIZE_WHITESPACE
+	{'length': 9, 
+	 'alphabet': {1, 2, 3, 4}, 
+	 'sequence_universe': 262144, 
+	 'unique_bigrams': 7, 
+	 'bigram_universe': 16, 
+	 'ntransitions': 6, 
+	 'entropy': 0.8763576394898526}
 
 	"""
 	details = {
@@ -560,7 +558,7 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 	Examples
 	----------
 	>>> sequence = [1,2,2,1,2,3,2,3,1]
-	>>> ps.get_transition_matrix(sequence)
+	>>> ps.get_transition_matrix(sequence) #doctest: +NORMALIZE_WHITESPACE
 		->1 	->2 	->3
 	1-> 	0.0 	2.0 	0.0
 	2-> 	1.0 	1.0 	2.0
@@ -606,17 +604,17 @@ def plot_sequence(sequence, highlighted_ngrams=[]):
 	.. plot::
 
 		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
-		>>> ps.plot_sequence(sequence)
+		>>> ps.plot_sequence(sequence) #doctest: +SKIP
 		
 	.. plot::
 
 		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
-		>>> ps.plot_sequence(sequence, [1,2])
+		>>> ps.plot_sequence(sequence, [1,2]) #doctest: +SKIP
 
 	.. plot::
 
 		>>> sequence = [1,2,3,2,3,4,4,3,2,3,1,3,1,2,3,1,3,4,2,3,2,2]
-		>>> ps.plot_sequence(sequence, [[1,2,3], [3,4]])
+		>>> ps.plot_sequence(sequence, [[1,2,3], [3,4]]) #doctest: +SKIP
 	
 	"""
 	np_sequence = np.array(sequence)
@@ -677,7 +675,7 @@ def plot_sequence_1d(sequence, flat=False):
 	Example
 	---------    
 	>>> sequence = [1,1,1,2,2,2,3,1,3,2,2,2,4,4,1,1,1,1,2,1,1]
-	>>> plot_sequence_1d(sequence)
+	>>> plot_sequence_1d(sequence) #doctest: +SKIP
 	
 	"""
 	
@@ -713,7 +711,7 @@ def plot_element_counts(sequence):
 	.. plot::
 
 		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
-		>>> ps.plot_element_counts(sequence)
+		>>> ps.plot_element_counts(sequence) #doctest: +SKIP
 
 	"""
 	
@@ -738,7 +736,7 @@ def plot_ngram_counts(sequence, n):
 	.. plot::
 
 		>>> sequence = [1,1,2,1,2,2,3,1,1,2,2,1,2,2,3,1,1,2]
-		>>> ps.plot_ngram_counts(sequence, 3)
+		>>> ps.plot_ngram_counts(sequence, 3) #doctest: +SKIP
 
 	"""
 	
@@ -763,7 +761,7 @@ def plot_transition_matrix(sequence, cmap='summer'):
 	.. plot::
 
 		>>> sequence = [1,1,2,1,4,2,3,1,1,2,2,1,2,2,3,1,1,2]
-		>>> ps.plot_transition_matrix(sequence)
+		>>> ps.plot_transition_matrix(sequence) #doctest: +SKIP
 
 	"""
 

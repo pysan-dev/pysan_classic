@@ -13,7 +13,7 @@ def get_common_ngrams(sequences, ngram_length):
 	>>> s2 = [1,1,1,2,2,2,2,2,3,3,3,3,4,4,4]
 	>>> s3 = [1,1,2,2,2,2,2,3,3,3,2,3,3,4,4]
 	>>> sequences = [s1,s2,s3]
-	>>> ps.get_common_ngrams(sequences, 3)
+	>>> ps.get_common_ngrams(sequences, 3) #doctest: +NORMALIZE_WHITESPACE
 	{'[1, 1, 2]': 3,
 	'[1, 2, 2]': 3,
 	'[2, 2, 2]': 8,
@@ -42,7 +42,7 @@ def get_common_ngrams(sequences, ngram_length):
 
 def get_modal_state(sequences):
 	"""
-	Computes the modal states for each position in a collection of sequences, returning a sequence.
+	Computes the modal states for each position in a collection of sequences, returning a sequence of tuples containing the modal element and its number of occurances at that position.
 
 	Example
 	--------
@@ -51,7 +51,8 @@ def get_modal_state(sequences):
 	>>> s3 = [1,1,1,1,2,2,3]
 	>>> sequences = [s1,s2,s3]
 	>>> ps.get_modal_state(sequences)
-	[1,1,1,2,2,3,3]
+	[(1, 3), (1, 2), (1, 2), (2, 2), (2, 3), (3, 2), (3, 3)]
+
 
 	"""
 
@@ -87,7 +88,7 @@ def get_sequence_frequencies(sequences):
 		>>> s2 = [1,2,2,3,3]
 		>>> s3 = [1,1,2,2,2]
 		>>> sequences = [s1,s2,s2,s3,s3,s3]
-		>>> ps.get_sequence_frequencies(sequences)
+		>>> ps.get_sequence_frequencies(sequences) #doctest: +NORMALIZE_WHITESPACE
 		{'[1, 1, 2, 2, 2]': 3, 
 		 '[1, 2, 2, 3, 3]': 2, 
 		 '[1, 1, 2, 2, 3]': 1}
@@ -114,7 +115,7 @@ def get_global_alphabet(sequences):
 	>>> s2 = [1,1,2,2,3,3]
 	>>> sequences = [s1,s2]
 	>>> ps.get_global_alphabet(sequences)
-	[1,2,3]
+	[1, 2, 3]
 
 	"""
 	
@@ -125,40 +126,41 @@ def get_global_alphabet(sequences):
 	return global_alphabet
 
 def get_transition_frequencies(sequences):
-    """
-    
-    Example
-    --------
-    .. plot::
-    
-        >>> s1 = [1,1,1,2,2,3,3,4,4,3,2,2,2,3,3,3,2,2,1,1,1]
-        >>> s2 = [1,1,2,2,3,2,4,4,3,2,2,2,3,2,2,2,3,3,3,4,4]
-        >>> s3 = [1,1,1,2,2,3,3,3,4,3,2,2,2,3,3,3,4,4,4,3,3]
-        >>> s4 = [1,1,1,1,2,3,2,3,3,3,3,2,2,2,3,3,3,4,4,4,4]
-        >>> sequences = [s1,s2,s3,s4]
-        {'[2, 3]': 10,
-         '[3, 2]': 8,
-         '[3, 4]': 5,
-         '[4, 3]': 4,
-         '[1, 2]': 4,
-         '[2, 4]': 1,
-         '[2, 1]': 1}
-    """
-    
-    all_transitions = []
-    for sequence in sequences:
-        all_transitions += pysan_core.get_transitions(sequence)
+	"""
+	Computes the number of transitions for all sequences in a collection.
 
-        
-    all_transitions_as_strings = [str(t) for t in all_transitions]
-    transition_frequencies = {}
-    
-    for transition in set(all_transitions_as_strings):
-        transition_frequencies[str(transition)] = all_transitions_as_strings.count(transition)
-    
-    transition_frequencies = {k: v for k, v in sorted(transition_frequencies.items(), key=lambda item: item[1], reverse=True)}
-    
-    return transition_frequencies
+	Example
+	--------
+	.. plot::
+	
+		>>> s1 = [1,1,1,2,2,3,3,3]
+		>>> s2 = [1,1,2,2,3,2,4,4]
+		>>> s3 = [1,1,1,2,2,3,3,3]
+		>>> s4 = [1,1,1,1,2,3,2,3]
+		>>> sequences = [s1,s2,s3,s4]
+		>>> ps.get_transition_frequencies(sequences) #doctest: +NORMALIZE_WHITESPACE
+		{'[2, 3]': 5, 
+		 '[1, 2]': 4, 
+		 '[3, 2]': 2, 
+		 '[2, 4]': 1}
+
+
+	"""
+	
+	all_transitions = []
+	for sequence in sequences:
+		all_transitions += pysan_core.get_transitions(sequence)
+
+		
+	all_transitions_as_strings = [str(t) for t in all_transitions]
+	transition_frequencies = {}
+	
+	for transition in set(all_transitions_as_strings):
+		transition_frequencies[str(transition)] = all_transitions_as_strings.count(transition)
+	
+	transition_frequencies = {k: v for k, v in sorted(transition_frequencies.items(), key=lambda item: item[1], reverse=True)}
+	
+	return transition_frequencies
 
 def get_motif(sequences):
 	"""
@@ -173,9 +175,9 @@ def get_motif(sequences):
 	>>> s2 = [1,2,2,3,3]
 	>>> s3 = [1,1,2,2,2]
 	>>> sequences = [s1,s2,s3]
-	>>> get_motif(sequences)
+	>>> ps.get_motif(sequences)
 	[1, 0, 2, 0, 0]
-	
+
 	"""
 	
 	shortest_sequence = min([len(s) for s in sequences])
@@ -233,13 +235,13 @@ def get_dissimilarity(sequences, function):
 	Example
 	---------
 	>>> s1 = [1,1,2,2,3]
-	>>> >>> s2 = [1,2,2,3,3]
+	>>> s2 = [1,2,2,3,3]
 	>>> s3 = [1,1,2,2,2]
 	>>> sequences = [s1,s2,s3]
-	>>> ps.get_dissimilarity(sequences, ps.get_synchrony)
+	>>> ps.get_dissimilarity(sequences, ps.get_synchrony) #doctest: +NORMALIZE_WHITESPACE
 	array([[1. , 0.6, 0.8],
-		   [0.6, 1. , 0.4],
-		   [0.8, 0.4, 1. ]])
+       	   [0.6, 1. , 0.4],
+           [0.8, 0.4, 1. ]])
 	
 	"""
 	
@@ -250,7 +252,7 @@ def get_dissimilarity(sequences, function):
 	for row in range(num_sequences):
 		for column in range(num_sequences):
 			score = function([sequences[row], sequences[column]])
-			scores[row,column] = score
+			scores[row,column] = float(score)
 	
 	return scores
 
@@ -267,7 +269,7 @@ def plot_common_ngrams(sequences, ngram_length):
 		>>> s2 = [2,3,3,2,1,2,2,2,3,4,4,1,2,1,3]
 		>>> s3 = [1,3,3,2,2,2,2,3,3,3,2,3,3,4,4]
 		>>> sequences = [s1,s2,s3]
-		>>> ps.plot_common_ngrams(sequences, 3)
+		>>> ps.plot_common_ngrams(sequences, 3) #doctest: +SKIP
 
 	"""
 	found_ngrams = get_common_ngrams(sequences, ngram_length)
@@ -294,8 +296,8 @@ def plot_sequences(sequences, gap=True):
 		>>> s3 = [1,1,1,2,2,3,2,4,4,3,2,1,2,3,3,3,4,4,4,3,3]
 		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,1,2,2,3,3,3,4,4,4,4]
 		>>> sequences = [s1,s2,s3,s4]
-		>>> ps.plot_sequences(sequences)
-		>>> ps.plot_sequences(sequences, gap=False)
+		>>> ps.plot_sequences(sequences) #doctest: +SKIP
+		>>> ps.plot_sequences(sequences, gap=False) #doctest: +SKIP
 
 	"""
 	max_sequence_length = max([len(s) for s in sequences])
@@ -347,7 +349,7 @@ def plot_state_distribution(sequences):
 		>>> s3 = [1,1,1,2,2,3,3,3,4,3,2,2,2,3,3,3,4,4,4,3,3]
 		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,2,2,2,3,3,3,4,4,4,4]
 		>>> sequences = [s1,s2,s3,s4]
-		>>> ps.plot_state_distribution(sequences)
+		>>> ps.plot_state_distribution(sequences) #doctest: +SKIP
 	
 	"""
 	
@@ -402,7 +404,7 @@ def plot_sequence_frequencies(sequences):
 		>>> s2 = [1,1,2,2,3,2,4,4,3,2,2,2,3,2,2,2,3,3,3,4,4]
 		>>> s3 = [1,1,1,2,2,3,3,3,4,3,2,2,2,3,3,3,4,4,4,3,3]
 		>>> sequences = [s1,s2,s2,s3,s3,s3]
-		>>> ps.plot_sequence_frequencies(sequences)
+		>>> ps.plot_sequence_frequencies(sequences) #doctest: +SKIP
 
 	"""
 	frequencies = get_sequence_frequencies(sequences)
@@ -439,7 +441,7 @@ def plot_transition_frequencies(sequences):
 		>>> s3 = [1,1,1,2,2,3,3,3,4,3,2,2,2,3,3,3,4,4,4,3,3]
 		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,2,2,2,3,3,3,4,4,4,4]
 		>>> sequences = [s1,s2,s3,s4]
-		>>> ps.plot_transition_frequencies(sequences)
+		>>> ps.plot_transition_frequencies(sequences) #doctest: +SKIP
 	"""    
 
 	transition_frequencies = get_transition_frequencies(sequences)
@@ -466,7 +468,7 @@ def plot_mean_occurance(sequences):
 		>>> s2 = [1,1,1,2,2,2,2,2,3,3,3,3,4,4,4]
 		>>> s3 = [1,1,2,2,2,2,2,3,3,3,2,3,3,4,4]
 		>>> sequences = [s1,s2,s3]
-		>>> ps.plot_mean_occurance(sequences)
+		>>> ps.plot_mean_occurance(sequences) #doctest: +SKIP
 	
 	"""
 	
@@ -505,7 +507,7 @@ def plot_modal_state(sequences):
 		>>> s2 = [1,2,2,2,2,3,3]
 		>>> s3 = [1,1,1,1,2,2,3]
 		>>> sequences = [s1,s2,s3]
-		>>> ps.plot_modal_state(sequences)
+		>>> ps.plot_modal_state(sequences) #doctest: +SKIP
 
 	"""
 	modal_elements = get_modal_state(sequences)
@@ -547,7 +549,7 @@ def plot_entropy(sequences):
 		>>> s3 = [2,2,1,1,2,3,2,4,4,3,2,1,2,3,3,3,4,4,4,3,4]
 		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,1,2,2,3,3,3,4,4,4,3]
 		>>> sequences = [s1,s2,s3,s4]
-		>>> ps.plot_entropy(sequences)
+		>>> ps.plot_entropy(sequences) #doctest: +SKIP
 
 	"""
 

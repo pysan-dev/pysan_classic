@@ -16,11 +16,20 @@ body{
 	margin-top: 0;
 }
 div.body{
-	margin-top: 120px;
+	margin-bottom: 300px;
 }
+.notice p{
+	border: 2px solid red;
+	padding: 10px;
+	text-align: center;
+}
+footer{
+	display: none;
+}
+
 #pageheader{
 	width: 100%;
-	position: fixed;
+
 }
 
 .full_width{
@@ -32,7 +41,6 @@ div.body{
 
 .sphinxsidebarwrapper{
 	position: fixed;
-	margin-top: 100px;
 }
 
 .part_width{
