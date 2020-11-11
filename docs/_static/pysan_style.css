@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Roboto+Mono&display=swap');
+
+*{
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}
+pre{
+	font-family: 'Roboto Mono';
+}
+
+body{
+	max-width: 1200px;
+	margin: 0 auto;
+	background-image: none;
+	border: none;
+}
+
+div.body{
+	max-width: 100%;
+}
+div.body img{
+	max-width: 500px;
+	margin: 0 auto;
+}
+
+#pageheader{
+	text-align: left;
+	padding-left: 10px;
+	margin-bottom: 2px;
+}
+#pageheader h1{
+	font-size: 34px;
+	margin-bottom: -12px;
+}
+
+h1, h2, h3{
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+    color:#24292e;
+}
+div.sphinxsidebar h3, div.sphinxsidebar h4, div.related ul{
+	background-color: #aaa !important;
+	color: black !important;
+	border: none !important;
+}
+
+img{
+	vertical-align: middle;
+}
+div.footer{
+	display: none;
+}

@@ -512,7 +512,7 @@ def describe(sequence):
 
 def get_element_counts(sequence):
 	"""
-	Counts the numeber of occurances for each element in a sequence, returning a dictionary containing the elements as keys and their counts as values.
+	Counts the number of occurances for each element in a sequence, returning a dictionary containing the elements as keys and their counts as values.
 	
 	Example
 	---------

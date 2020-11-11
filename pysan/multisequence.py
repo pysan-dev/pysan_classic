@@ -3,6 +3,27 @@ import pysan.core as pysan_core
 import itertools
 import numpy as np
 
+def generate_sequences(count, length, alphabet):
+	"""
+	Generates a number of sequences of a given length, with elements uniformly distributed using a given alphabet.
+	This is useful for speed testing and other developer use-cases.
+	
+	Example
+	--------
+	>>> ps.generate_sequences(5, 10, [1,2,3]) #doctest: +SKIP
+	[[2, 3, 2, 2, 3, 1, 2, 2, 1, 2],
+	 [3, 1, 3, 3, 1, 3, 1, 3, 3, 1],
+	 [1, 1, 2, 3, 3, 1, 3, 1, 3, 3],
+	 [1, 3, 1, 2, 3, 2, 3, 1, 3, 2],
+	 [1, 3, 2, 2, 2, 2, 3, 3, 1, 3]]
+	"""
+	
+	sequences = []
+	for x in range(count):
+		sequences.append(pysan_core.generate_sequence(length, alphabet))
+	
+	return sequences
+
 def get_common_ngrams(sequences, ngram_length):
 	"""
 	Extracts n-grams which appear one or more times in a collection of sequences, returning the number of occurances in a dictionary.
@@ -39,6 +60,109 @@ def get_common_ngrams(sequences, ngram_length):
 			for key in keys_to_remove:
 				del found_ngrams[key]
 	return found_ngrams
+
+def get_all_spells(sequences):
+	"""
+	UC Computes spells across a collection of sequences, returning a list of tuples where each tuple holds the element, the length of the spell, and the number of occurances in the collection.
+	"""
+	
+	all_spells = []
+	for sequence in sequences:
+		spells = ps.get_spells(sequence)
+		
+	pass
+
+def get_longest_spells(sequences):
+	"""
+	UC Extracts the longest spell for each sequence in a collection, returning the element, count, and starting position for each of the spells.
+
+	"""
+
+	pass
+
+def are_recurrent(sequences):
+	"""
+	UC Returns true if all sequences in a given collection are recurrant, false otherwise.
+	"""
+
+	pass
+
+def get_first_position_reports(sequences):
+	"""
+	UC Reports the positions of each first occurance of each element across a collection of sequences.
+	"""
+
+	pass
+
+def get_all_ntransitions(sequences):
+	"""
+	UC Returns a list containing the number of transactions in each sequence in a collection.
+	"""
+
+	pass
+
+def get_entropies(sequences):
+	"""
+	UC Returns a list containing the entropy scores for each sequence in a collection using :meth:`get_entropy() <pysan.core.get_entropy>`.
+	"""
+
+	pass
+
+def get_turbulences(sequences):
+	"""
+	UC Returns a list containing the turbulence scores for each sequence in a collection using :meth:`get_turbulence() <pysan.core.get_turbulence>`.
+	"""
+
+	pass
+
+def get_complexities(sequences):
+	"""
+	UC Returns a list containing the complexity scores for each sequence in a collection using :meth:`get_complexity() <pysan.core.get_complexity>`.
+	"""
+
+	pass
+
+def get_routine_scores(sequences):
+	"""
+	UC Returns a list containing the routine scores for each sequence in a collection using :meth:`get_routine() <pysan.core.get_routine>`.
+	"""
+
+	pass
+
+def get_all_unique_ngrams(sequences ,n):
+	"""
+	UC Creates a list of all unique ngrams in a collection of sequences.
+	"""
+
+	pass
+
+def get_every_ngram(sequences, n):
+	"""
+	UC Creates a list of all ngrams across all sequences in a collection.
+	"""
+
+	pass
+
+def get_all_ngram_counts(sequences, n):
+	"""
+	UC Computes the prevalence of ngrams in a collection of sequences.
+	"""
+
+	pass
+
+def get_all_element_counts(sequences):
+	"""
+	UC Counts the number of occurances of each element across a collection of sequences.
+	"""
+
+	pass
+
+def get_all_element_frequencies(sequences):
+	"""
+	UC Computes the frequencies of each element across a collection of sequences.
+	"""
+
+	pass
 
 def get_modal_state(sequences):
 	"""
@@ -162,6 +286,13 @@ def get_transition_frequencies(sequences):
 	
 	return transition_frequencies
 
+def get_all_transitions_matrix(sequences):
+	"""
+	UC Computes a transition matrix across all transitions in every sequence in a collection.
+	"""
+
+	pass
+
 def get_motif(sequences):
 	"""
 	Computes the motif for a given collection of sequences.
@@ -257,7 +388,6 @@ def get_dissimilarity(sequences, function):
 	return scores
 
 # ============= MULTISEQUENCE PLOTTING ===============
-
 
 def plot_common_ngrams(sequences, ngram_length):
 	"""

@@ -47,7 +47,8 @@ extensions = [
     'matplotlib.sphinxext.plot_directive',
     #'sphinx_gallery.gen_gallery',
     'IPython.sphinxext.ipython_console_highlighting',
-    'IPython.sphinxext.ipython_directive'
+    'IPython.sphinxext.ipython_directive',
+    'sphinx.ext.autosectionlabel'
 ]
 
 plot_include_source = True
@@ -65,9 +66,9 @@ import pysan as ps
 '''
 
 
-intersphinx_mapping = {'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None)}
+#intersphinx_mapping = {'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None)}
 
-extlinks = {'pandas':('http://pandas.pydata.org', None)}
+#extlinks = {'pandas':('http://pandas.pydata.org', None)}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -81,9 +82,11 @@ add_module_names = False
 
 from better import better_theme_path
 html_theme_path = [better_theme_path]
-html_theme = 'better'
+html_theme = 'bizstyle'
 html_theme_options = {}
-html_theme_options['cssfiles'] = ['_static/style.css']
+html_css_files = ['pysan_style.css']
+
+html_sidebars = { '**': ['sidebar.html', 'relations.html', 'sourcelink.html', 'searchbox.html'] }
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

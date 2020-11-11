@@ -40,14 +40,23 @@ from pysan.core import(
 
 from pysan.multisequence import(
 
+    generate_sequences,
     get_common_ngrams,
 
     get_global_alphabet,
     get_sequence_frequencies,
+    get_all_spells,
+    get_longest_spells,
+    are_recurrent,
+    get_first_position_reports,
+    get_all_ntransitions,
     get_transition_frequencies,
     get_motif,
     get_modal_state,
     get_synchrony,
+    get_entropies,
+    get_turbulences,
+    get_routine_scores,
     get_dissimilarity,
 
     plot_sequences,

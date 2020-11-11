@@ -46,6 +46,7 @@ footer{
 .part_width{
 	max-width: 60rem;
 	margin: 0 auto;
+	background-color: blue;
 }
 div.related.top{
 	display: none;
