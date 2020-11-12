@@ -13,7 +13,7 @@
 
 .. container:: notice
 
-	**Please note: pysan is currently in beta - parts of this page may be incomplete**
+	**Please note: pysan is currently in beta - parts of this site may be incomplete**
 
 
 Welcome
@@ -23,8 +23,7 @@ Welcome
 
 .. image:: api-14_00.hires.png
 
-
-
+Read through the user guide and the API reference using the links below to get started, after installing it using one of the commands at the bottom of this page.
 
 .. toctree::
 

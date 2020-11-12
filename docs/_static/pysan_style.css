@@ -10,7 +10,7 @@ pre{
 }
 
 body{
-	max-width: 1200px;
+	max-width: 1100px;
 	margin: 0 auto;
 	background-image: none;
 	border: none;
@@ -18,6 +18,7 @@ body{
 
 div.body{
 	max-width: 100%;
+	border-right: 1px solid #ccc;
 }
 div.body img{
 	max-width: 500px;
@@ -38,14 +39,42 @@ h1, h2, h3{
     font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
     color:#24292e;
 }
+p{
+	color: #23282d;
+}
 div.sphinxsidebar h3, div.sphinxsidebar h4, div.related ul{
-	background-color: #aaa !important;
+	background-color: white;
 	color: black !important;
 	border: none !important;
+}
+div.sphinxsidebar h3, div.sphinxsidebar h4{
+	padding-left: 0;
+}
+div.part_width h3{
+	border-bottom: none;
+}
+ div.related ul{
+ 	margin-top: 10px;
+ 	background-color: #555;
+ 	text-transform: uppercase;
+ 	font-size: 11px;
+ 	font-weight: bold;
+ 	letter-spacing: 1px;
+ }
+.notice{
+	text-align: center;
+	border: 2px solid red;
+	border-radius: 5px;
+	width: 100%;
+	margin-top: 5px;
+}
+a{
+	color: blue;
 }
 
 img{
 	vertical-align: middle;
+	margin-bottom: 3px
 }
 div.footer{
 	display: none;

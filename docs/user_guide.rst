@@ -22,7 +22,7 @@ If you're using multi-channel data, each position in your list should be a tuple
 	multi_channel_sequence = [(1,2),(2,2),(3,2),(3,3)]
 
 
-You can get descriptive information on sequence using the :func:`.describe` method;
+With your data ready, it's useful to first get descriptive information using the :func:`.describe` method;
 
 .. ipython:: python
 
@@ -63,3 +63,6 @@ Using the :func:`.get_common_ngrams` method we can get the most common n-grams a
 
 Make a Transition Matrix
 ---------------------------
+
+
+

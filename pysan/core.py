@@ -674,13 +674,15 @@ def plot_sequence_1d(sequence, flat=False):
 	
 	Example
 	---------    
-	>>> sequence = [1,1,1,2,2,2,3,1,3,2,2,2,4,4,1,1,1,1,2,1,1]
-	>>> plot_sequence_1d(sequence) #doctest: +SKIP
+	.. plot::
+
+		>>> sequence = [1,1,1,2,2,2,3,1,3,2,2,2,4,4,1,1,1,1,2,1,1]
+		>>> ps.plot_sequence_1d(sequence) #doctest: +SKIP
 	
 	"""
 	
 	np_sequence = np.array(sequence)
-	alphabet_len = len(ps.get_alphabet(sequence))
+	alphabet_len = len(get_alphabet(sequence))
 
 	plt.figure(figsize=[len(sequence)*0.4, 0.5])
 

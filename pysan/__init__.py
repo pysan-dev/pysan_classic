@@ -32,6 +32,7 @@ from pysan.core import(
 
 
     plot_sequence,
+    plot_sequence_1d,
     plot_element_counts,
     plot_ngram_counts,
     plot_transition_matrix,
