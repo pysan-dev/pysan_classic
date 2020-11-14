@@ -82,10 +82,25 @@ def get_longest_spells(sequences):
 
 def are_recurrent(sequences):
 	"""
-	UC Returns true if all sequences in a given collection are recurrant, false otherwise.
+	Returns false if all sequences in a given collection are recurrant, true otherwise.
+	
+	Example
+	---------
+	>>> s1 = [1,2,3,4]
+	>>> s2 = [3,2,4,5]
+	>>> s3 = [2,3,4,1]
+	>>> sequences = [s1,s2,s3]
+	>>> ps.are_recurrent(sequences)
+	False
+
 	"""
 
-	pass
+	for sequence in sequences:
+		if pysan_core.is_recurrent(sequence):
+			return True
+	
+	return False
+
 
 def get_first_position_reports(sequences):
 	"""
