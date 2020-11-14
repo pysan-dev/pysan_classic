@@ -24,28 +24,9 @@ def generate_sequence(length, alphabet):
 	"""
 	return [random.choice(alphabet) for x in range(length)]
 
-def get_alphabet(sequence):
-	"""
-	Computes the alphabet of a given sequence (set of its unique elements).
-
-	Parameters
-	----------
-	sequence : int
-		A sequence of elements, encoded as integers e.g. [1,3,2,1].
-
-	Example
-	----------
-
-	>>> sequence = [1,1,2,1,2,2,3,4,2]
-	>>> ps.get_alphabet(sequence)
-	{1, 2, 3, 4}
-
-	"""
-	return set(sequence)
-	
 def full_analysis(sequence):
 	"""
-	Computes a collection of information on a given sequence plus a collection of plots.
+	UC Computes a collection of information on a given sequence plus a collection of plots.
 	
 	"""
 	
@@ -67,68 +48,52 @@ def full_analysis(sequence):
 	
 	return None
 
-def get_spells(sequence):
+def describe(sequence):
 	"""
-	Returns a list of tuples where each tuple holds the element and the length of the spell (also known as run or episode) for each spell in the sequence.
-	
+	Computes descriptive properties of a given sequence, returning a dictionary containing the keys: 
+	{'length', 'alphabet', 'sequence_universe', 'unique_bigrams', 'bigram_universe', 'entropy'}.
+
 	Example
 	---------
-	>>> sequence = [1,1,2,1,2,2,3]
-	>>> ps.get_spells(sequence)
-	[(1, 2), (2, 1), (1, 1), (2, 2), (3, 1)]
-	"""
-	
-	# get each spell and its length
-	spells = [(k, sum(1 for x in v)) for k,v in itertools.groupby(sequence)]
-	# this is functionally equivalent to the following;
-	# spells = [(k, len(list(v))) for k,v in itertools.groupby(sequence)]
-	
-	return spells
-
-def get_longest_spell(sequence):
-	"""
-	Returns a dict containing the element, count, and starting position of the longest spell in the sequence. The keys of this dict are 'element, 'count', and 'start'.
-	
-	Example
-	--------
-	>>> sequence = [1,1,1,4,2,2,3,4,2]
-	>>> ps.get_longest_spell(sequence)
-	{'element': 1, 'count': 3, 'start': 0}
+	>>> sequence = [1,1,2,1,2,2,3,4,2]
+	>>> ps.describe(sequence) #doctest: +NORMALIZE_WHITESPACE
+	{'length': 9, 
+	 'alphabet': {1, 2, 3, 4}, 
+	 'is_recurrent': True, 
+	 'entropy': 0.8763576394898526, 
+	 'complexity': 0.6885628567541515, 
+	 'turbulence': 7.868228975239414, 
+	 'element_counts': {1: 3, 2: 4, 3: 1, 4: 1}, 
+	 'first_positions': {1: 0, 2: 2, 3: 6, 4: 7}, 
+	 'ntransitions': 6, 
+	 'sequence_universe': 262144, 
+	 'distinct_subsequences': 175, 
+	 'unique_bigrams': 7, 
+	 'bigram_universe': 16, 
+	 'longest_spell': {'element': 1, 'count': 2, 'start': 0}}
 
 	"""
-	
-	spells = get_spells(sequence)
-
-	longest_spell = max(count for element, count in spells)
-
-	for i, (element, count) in enumerate(spells):
-		if count == longest_spell:
-			# sum the counts of all previous spells to get its starting position
-			position_in_sequence = sum(count for _,count in spells[:i])
-			
-			return {'element':element, 'count':count,'start':position_in_sequence}
-
-def get_transitions(sequence):
-	"""
-	Extracts a list of transitions from a sequence, returning a list of lists containing each transition.
-
-	Example
-	--------
-	>>> sequence = [1,2,2,1,2,3,2,3,1]
-	>>> ps.get_transitions(sequence)
-	[[1, 2], [2, 1], [1, 2], [2, 3], [3, 2], [2, 3], [3, 1]]
-
-	"""
-
-	transitions = []
-	for position in range(len(sequence) - 1):
-		if sequence[position] != sequence[position + 1]:
-			transitions.append([sequence[position], sequence[position + 1]])
-
-	return transitions
+	details = {
+	'length': len(sequence),
+	'alphabet': get_alphabet(sequence),
+	'is_recurrent': is_recurrent(sequence),
+	'entropy' : get_entropy(sequence),
+	'complexity': get_complexity(sequence),
+	'turbulence': get_turbulence(sequence),
+	'element_counts': get_element_counts(sequence),
+	'first_positions': get_first_positions(sequence),
+	'ntransitions' : get_ntransitions(sequence),
+	'sequence_universe': get_ngram_universe(sequence, len(sequence)),
+	'distinct_subsequences': get_ndistinct_subsequences(sequence),
+	'unique_bigrams': len(get_unique_ngrams(sequence, 2)),
+	'bigram_universe' : get_ngram_universe(sequence, 2),
+	'longest_spell': get_longest_spell(sequence)
+	# spell durations here
+	}
+	return details
 
 # ====================================================================================
-# STATISTICAL/DESCRIPTIVE FUNCTIONS
+# SUMMARY STATISTICS
 # ====================================================================================
 
 def is_recurrent(sequence):
@@ -156,40 +121,6 @@ def is_recurrent(sequence):
 		return True
 
 	return False
-
-def first_position_report(sequence):
-	"""
-	Reports the first occurance of each element in the sequence in a dictionary, with each element as keys, and their first position as values.
-	
-	Example
-	---------
-	>>> sequence = [1,1,2,3,4]
-	>>> ps.first_position_report(sequence)
-	{1: 0, 2: 2, 3: 3, 4: 4}
-
-
-	"""
-	unique_elements = list(set(sequence))
-
-	first_positions = {}
-	for element in unique_elements:
-		first_positions[element] = sequence.index(element)
-		
-	return first_positions
-
-def get_ntransitions(sequence):
-	"""
-	Computes the number of transitions in a sequence.
-	
-	Example
-	--------
-	>>> sequence = [1,1,1,2,2,3,3,3,4,4]
-	>>> ps.get_ntransitions(sequence)
-	3
-	
-	"""
-	
-	return len(get_transitions(sequence))
 
 def get_entropy(sequence):
 	"""
@@ -221,48 +152,6 @@ def get_entropy(sequence):
 		return 0
 	
 	return -entropy / -alphabet_entropy
-
-def get_ndistinct_subsequences(sequence):
-	"""
-	Computes the number of distinct subsequences for a given sequence, based on original implementation by 
-	Mohit Kumar available `here <https://www.geeksforgeeks.org/count-distinct-subsequences/>`_.
-	
-	Example
-	--------
-	>>> sequence = [1,2,1,3]
-	>>> ps.get_ndistinct_subsequences(sequence)
-	14
-	
-	"""
-	# this implementation works on strings, so parse non-strings to strings
-	if sequence is not str:
-		sequence = [str(e) for e in sequence]
-
-	# create an array to store index of last
-	last = [-1 for i in range(256 + 1)] # hard-coded value needs explaining -ojs
-	 
-	# length of input string
-	sequence_length = len(sequence)
-	 
-	# dp[i] is going to store count of discount subsequence of length of i
-	dp = [-2 for i in range(sequence_length + 1)]
-	  
-	# empty substring has only one subseqence
-	dp[0] = 1
-	 
-	# Traverse through all lengths from 1 to n 
-	for i in range(1, sequence_length + 1):
-		 
-		# number of subseqence with substring str[0...i-1]
-		dp[i] = 2 * dp[i - 1]
- 
-		# if current character has appeared before, then remove all subseqences ending with previous occurrence.
-		if last[ord(sequence[i - 1])] != -1:
-			dp[i] = dp[i] - dp[last[ord(sequence[i - 1])]]
-			
-		last[ord(sequence[i - 1])] = i - 1    
-	
-	return dp[sequence_length]
 
 def get_turbulence(sequence):
 	"""
@@ -363,10 +252,136 @@ def get_routine(sequence, duration):
 	
 	return pysan_ms.get_synchrony(cycles)
 
+# ====================================================================================
+# ELEMENTS
+# ====================================================================================
+
+def get_alphabet(sequence):
+	"""
+	Computes the alphabet of a given sequence (set of its unique elements).
+
+	Parameters
+	----------
+	sequence : int
+		A sequence of elements, encoded as integers e.g. [1,3,2,1].
+
+	Example
+	----------
+
+	>>> sequence = [1,1,2,1,2,2,3,4,2]
+	>>> ps.get_alphabet(sequence)
+	{1, 2, 3, 4}
+
+	"""
+	return set(sequence)
+	
+def get_first_positions(sequence):
+	"""
+	Reports the first occurance of each element in the sequence in a dictionary, with each element as keys, and their first position as values.
+	
+	Example
+	---------
+	>>> sequence = [1,1,2,3,4]
+	>>> ps.get_first_positions(sequence)
+	{1: 0, 2: 2, 3: 3, 4: 4}
+
+
+	"""
+	unique_elements = list(set(sequence))
+
+	first_positions = {}
+	for element in unique_elements:
+		first_positions[element] = sequence.index(element)
+		
+	return first_positions
+
+def get_element_counts(sequence):
+	"""
+	Counts the number of occurances for each element in a sequence, returning a dictionary containing the elements as keys and their counts as values.
+	
+	Example
+	---------
+	>>> sequence = [1,1,2,1,2,2,3,4,2]
+	>>> ps.get_element_counts(sequence)
+	{1: 3, 2: 4, 3: 1, 4: 1}
+	
+	"""
+	alphabet = get_alphabet(sequence)
+	
+	counts = {}
+	for element in alphabet:
+		counts[element] = sequence.count(element)
+		
+	return counts
+
+def get_element_frequency(sequence):
+	"""
+	Computes the relative frequency (aka prevalence or unconditional probability) of each element in a sequence, returning a dictionary where each key is an element and each value is that elements relative frequency.
+	
+	Example
+	---------
+	>>> sequence = [1,1,2,1,2,2,3,4,2,1]
+	>>> ps.get_element_frequency(sequence)
+	{1: 0.4, 2: 0.4, 3: 0.1, 4: 0.1}
+
+	"""
+	
+	alphabet = get_alphabet(sequence)
+	
+	prevalences = {}
+	for element in alphabet:
+		prevalences[element] = sequence.count(element) / len(sequence)
+		
+	return prevalences
+
 
 # ====================================================================================
-# NGRAM FUNCTIONS
+# SUBSEQUENCES
 # ====================================================================================
+
+# NGRAMS
+
+def get_ndistinct_subsequences(sequence):
+	"""
+	Computes the number of distinct subsequences for a given sequence, based on original implementation by 
+	Mohit Kumar available `here <https://www.geeksforgeeks.org/count-distinct-subsequences/>`_.
+	
+	Example
+	--------
+	>>> sequence = [1,2,1,3]
+	>>> ps.get_ndistinct_subsequences(sequence)
+	14
+	
+	"""
+	# this implementation works on strings, so parse non-strings to strings
+	if sequence is not str:
+		sequence = [str(e) for e in sequence]
+
+	# create an array to store index of last
+	last = [-1 for i in range(256 + 1)] # hard-coded value needs explaining -ojs
+	 
+	# length of input string
+	sequence_length = len(sequence)
+	 
+	# dp[i] is going to store count of discount subsequence of length of i
+	dp = [-2 for i in range(sequence_length + 1)]
+	  
+	# empty substring has only one subseqence
+	dp[0] = 1
+	 
+	# Traverse through all lengths from 1 to n 
+	for i in range(1, sequence_length + 1):
+		 
+		# number of subseqence with substring str[0...i-1]
+		dp[i] = 2 * dp[i - 1]
+ 
+		# if current character has appeared before, then remove all subseqences ending with previous occurrence.
+		if last[ord(sequence[i - 1])] != -1:
+			dp[i] = dp[i] - dp[last[ord(sequence[i - 1])]]
+			
+		last[ord(sequence[i - 1])] = i - 1    
+	
+	return dp[sequence_length]
 
 def get_unique_ngrams(sequence, n):
 	"""
@@ -476,78 +491,41 @@ def get_ngram_counts(sequence, n):
 	
 	return ngram_counts
 
-def describe(sequence):
+
+# TRANSITIONS
+
+def get_transitions(sequence):
 	"""
-	Computes descriptive properties of a given sequence, returning a dictionary containing the keys: 
-	{'length', 'alphabet', 'sequence_universe', 'unique_bigrams', 'bigram_universe', 'entropy'}.
+	Extracts a list of transitions from a sequence, returning a list of lists containing each transition.
 
 	Example
-	---------
-	>>> sequence = [1,1,2,1,2,2,3,4,2]
-	>>> ps.describe(sequence) #doctest: +NORMALIZE_WHITESPACE
-	{'length': 9, 
-	 'alphabet': {1, 2, 3, 4}, 
-	 'sequence_universe': 262144, 
-	 'unique_bigrams': 7, 
-	 'bigram_universe': 16, 
-	 'ntransitions': 6, 
-	 'entropy': 0.8763576394898526}
+	--------
+	>>> sequence = [1,2,2,1,2,3,2,3,1]
+	>>> ps.get_transitions(sequence)
+	[[1, 2], [2, 1], [1, 2], [2, 3], [3, 2], [2, 3], [3, 1]]
 
 	"""
-	details = {
-	'length': len(sequence),
-	'alphabet': get_alphabet(sequence),
-	'sequence_universe': get_ngram_universe(sequence, len(sequence)),
-	'unique_bigrams': len(get_unique_ngrams(sequence, 2)),
-	'bigram_universe' : get_ngram_universe(sequence, 2),
-	'ntransitions' : get_ntransitions(sequence),
-	'entropy' : get_entropy(sequence)
-	}
-	return details
 
+	transitions = []
+	for position in range(len(sequence) - 1):
+		if sequence[position] != sequence[position + 1]:
+			transitions.append([sequence[position], sequence[position + 1]])
 
-# ====================================================================================
-# ELEMENT-ORIENTED FUNCTIONS
-# ====================================================================================
+	return transitions
 
-def get_element_counts(sequence):
+def get_ntransitions(sequence):
 	"""
-	Counts the number of occurances for each element in a sequence, returning a dictionary containing the elements as keys and their counts as values.
+	Computes the number of transitions in a sequence.
 	
 	Example
-	---------
-	>>> sequence = [1,1,2,1,2,2,3,4,2]
-	>>> ps.get_element_counts(sequence)
-	{1: 3, 2: 4, 3: 1, 4: 1}
+	--------
+	>>> sequence = [1,1,1,2,2,3,3,3,4,4]
+	>>> ps.get_ntransitions(sequence)
+	3
 	
 	"""
-	alphabet = get_alphabet(sequence)
 	
-	counts = {}
-	for element in alphabet:
-		counts[element] = sequence.count(element)
-		
-	return counts
-
-def get_element_frequency(sequence):
-	"""
-	Computes the relative frequency (aka prevalence or unconditional probability) of each element in a sequence, returning a dictionary where each key is an element and each value is that elements relative frequency.
-	
-	Example
-	---------
-	>>> sequence = [1,1,2,1,2,2,3,4,2,1]
-	>>> ps.get_element_frequency(sequence)
-	{1: 0.4, 2: 0.4, 3: 0.1, 4: 0.1}
-
-	"""
-	
-	alphabet = get_alphabet(sequence)
-	
-	prevalences = {}
-	for element in alphabet:
-		prevalences[element] = sequence.count(element) / len(sequence)
-		
-	return prevalences
+	return len(get_transitions(sequence))
 
 def get_transition_matrix(sequence, alphabet=None, verbose=False):
 	"""
@@ -588,6 +566,64 @@ def get_transition_matrix(sequence, alphabet=None, verbose=False):
 	tm_df = pd.DataFrame(transition_matrix, columns=post_alphabet, index=pre_alphabet)
 	return tm_df
 
+# SPELLS 
+
+def get_spells(sequence):
+	"""
+	Returns a list of tuples where each tuple holds the element and the length of the spell (also known as run or episode) for each spell in the sequence.
+	
+	Example
+	---------
+	>>> sequence = [1,1,2,1,2,2,3]
+	>>> ps.get_spells(sequence)
+	[(1, 2), (2, 1), (1, 1), (2, 2), (3, 1)]
+	"""
+	
+	# get each spell and its length
+	spells = [(k, sum(1 for x in v)) for k,v in itertools.groupby(sequence)]
+	# this is functionally equivalent to the following;
+	# spells = [(k, len(list(v))) for k,v in itertools.groupby(sequence)]
+	
+	return spells
+
+def get_longest_spell(sequence):
+	"""
+	Returns a dict containing the element, count, and starting position of the longest spell in the sequence. The keys of this dict are 'element, 'count', and 'start'.
+	
+	Example
+	--------
+	>>> sequence = [1,1,1,4,2,2,3,4,2]
+	>>> ps.get_longest_spell(sequence)
+	{'element': 1, 'count': 3, 'start': 0}
+
+	"""
+	
+	spells = get_spells(sequence)
+
+	longest_spell = max(count for element, count in spells)
+
+	for i, (element, count) in enumerate(spells):
+		if count == longest_spell:
+			# sum the counts of all previous spells to get its starting position
+			position_in_sequence = sum(count for _,count in spells[:i])
+			
+			return {'element':element, 'count':count,'start':position_in_sequence}
+
+def get_spell_durations(sequence):
+	"""
+	Computes the durations of each spell in the sequence, returning a list.
+
+	Example
+	---------
+	>>> sequence = [1,1,2,1,2,2,3]
+	>>> ps.get_spell_durations(sequence)
+	[2, 1, 1, 2, 1]
+	"""
+
+	spells = get_spells(sequence)
+	durations = [spell[1] for spell in spells]
+
+	return durations
 
 # ====================================================================================
 # PLOTTING FUNCTIONS

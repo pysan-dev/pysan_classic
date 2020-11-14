@@ -5,21 +5,23 @@ from pysan.core import(
 	generate_sequence,
 	describe,
     full_analysis,
-    first_position_report,
 
     get_alphabet,
     get_element_counts,
     get_element_frequency,
+    get_first_positions,
 
     get_spells,
     get_longest_spell,
+    get_spell_durations,
+
     get_transitions,
     is_recurrent,
     get_entropy,
     get_ndistinct_subsequences,
     get_turbulence,
+    get_complexity,
     get_routine,
-
 
     get_all_ngrams,
     get_unique_ngrams,
@@ -55,8 +57,7 @@ from pysan.multisequence import(
     get_motif,
     get_modal_state,
     get_synchrony,
-    get_entropies,
-    get_turbulences,
+    get_statistics,
     get_routine_scores,
     get_dissimilarity,
 
