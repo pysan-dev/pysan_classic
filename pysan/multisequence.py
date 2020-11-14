@@ -101,7 +101,6 @@ def are_recurrent(sequences):
 	
 	return False
 
-
 def get_first_position_reports(sequences):
 	"""
 	UC Reports the positions of each first occurance of each element across a collection of sequences.
@@ -116,26 +115,16 @@ def get_all_ntransitions(sequences):
 
 	pass
 
-def get_entropies(sequences):
+
+def get_statistics(sequence, function):
 	"""
-	UC Returns a list containing the entropy scores for each sequence in a collection using :meth:`get_entropy() <pysan.core.get_entropy>`.
+	UC Computes a summary statistic (e.g. entropy, complexity, or turbulence) for each sequence in a collection.
+
 	"""
 
 	pass
 
-def get_turbulences(sequences):
-	"""
-	UC Returns a list containing the turbulence scores for each sequence in a collection using :meth:`get_turbulence() <pysan.core.get_turbulence>`.
-	"""
 
-	pass
-
-def get_complexities(sequences):
-	"""
-	UC Returns a list containing the complexity scores for each sequence in a collection using :meth:`get_complexity() <pysan.core.get_complexity>`.
-	"""
-
-	pass
 
 def get_routine_scores(sequences):
 	"""
