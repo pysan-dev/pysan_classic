@@ -5,7 +5,7 @@
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
 }
-pre{
+pre span{
 	font-family: 'Roboto Mono';
 }
 
@@ -37,7 +37,7 @@ div.body img{
 
 h1, h2, h3{
     font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
-    color:#24292e;
+    color: #24292e;
 }
 p{
 	color: #23282d;
@@ -49,6 +49,9 @@ div.sphinxsidebar h3, div.sphinxsidebar h4, div.related ul{
 }
 div.sphinxsidebar h3, div.sphinxsidebar h4{
 	padding-left: 0;
+}
+div.sphinxsidebar ul, .toctree-wrapper ul{
+	line-height: 170%;
 }
 div.part_width h3{
 	border-bottom: none;
@@ -69,7 +72,7 @@ div.part_width h3{
 	margin-top: 5px;
 }
 a{
-	color: blue;
+	color: #007bff;
 }
 
 img{
@@ -78,4 +81,33 @@ img{
 }
 div.footer{
 	display: none;
+}
+
+div.guide img{
+	max-width: 45%;
+	text-align: center;
+}
+div.sphx-glr-download a{
+	background-color: white !important;
+	background-image: none !important;
+	border: 1px solid #007bff !important;
+	color: #007bff;
+}
+a code{
+	color: inherit;
+}
+a code:hover{
+	color: inherit;
+}
+
+div.sphx-glr-download a:hover{
+	color: white !important;
+	background-color: #007bff !important;
+}
+div.sphx-glr-download-link-note{
+	display: none;
+}
+p.sphx-glr-timing{
+	text-align: center;
+	margin-top: 80px;
 }

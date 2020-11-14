@@ -45,7 +45,7 @@ extensions = [
     'sphinxcontrib.napoleon',
     'sphinx_automodapi.automodapi',
     'matplotlib.sphinxext.plot_directive',
-    #'sphinx_gallery.gen_gallery',
+    'sphinx_gallery.gen_gallery',
     'IPython.sphinxext.ipython_console_highlighting',
     'IPython.sphinxext.ipython_directive',
     'sphinx.ext.autosectionlabel'
@@ -64,7 +64,10 @@ import sys
 sys.path.append('../../')
 import pysan as ps
 '''
-
+sphinx_gallery_conf = {
+     'examples_dirs': '../examples',   # path to your example scripts
+     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+}
 
 #intersphinx_mapping = {'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None)}
 

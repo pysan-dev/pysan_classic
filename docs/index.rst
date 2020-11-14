@@ -21,7 +21,12 @@ Welcome
 
 `pysan <https://github.com/pysan-dev/pysan>`_ is a library of methods for doing `sequence analysis <https://www.cambridge.org/core/books/social-sequence-analysis/3AC786DA3C99EB8795C7271BB350CB88>`_ using Python. It's free, open source, and each method is fully documented with examples. Using `pysan <https://github.com/pysan-dev/pysan>`_ you'll be able to run powerful sequence analysis and visualisation tasks with just a few lines of code, and integrate or extend them into your other Python workflows.
 
-.. image:: api-14_00.hires.png
+.. container:: guide
+
+	.. image:: _templates/within_sequence_capabilities.png
+
+	.. image:: _templates/multisequence_capabilities.png
+
 
 Read through the user guide and the API reference using the links below to get started, after installing it using one of the commands at the bottom of this page.
 
@@ -30,6 +35,7 @@ Read through the user guide and the API reference using the links below to get s
 	user_guide
 	api
 	roadmap
+	auto_examples/index
 
 
 Installation
