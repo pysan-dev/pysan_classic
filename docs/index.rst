@@ -31,6 +31,7 @@ Welcome
 Read through the user guide and the API reference using the links below to get started, after installing it using one of the commands at the bottom of this page.
 
 .. toctree::
+	:maxdepth: 2
 
 	user_guide
 	api

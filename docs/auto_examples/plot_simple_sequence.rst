@@ -70,7 +70,7 @@ For a quick guide on customisation using matplotlib I recommend `this earthdatas
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.121 seconds)
+   **Total running time of the script:** ( 0 minutes  0.117 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_simple_sequence.py:

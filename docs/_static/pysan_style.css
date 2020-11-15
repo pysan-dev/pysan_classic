@@ -111,3 +111,17 @@ p.sphx-glr-timing{
 	text-align: center;
 	margin-top: 80px;
 }
+
+dl.function{
+	padding-bottom: 50px !important;
+	padding: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+caption{
+	background-color: #007bff;
+	color: white;
+	font-weight: bold;
+	padding: 4px;
+	min-width: 200px;
+}

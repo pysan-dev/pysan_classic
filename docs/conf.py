@@ -69,6 +69,9 @@ sphinx_gallery_conf = {
      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
 }
 
+autodoc_default_options = {
+    'member-order': 'bysource'
+}
 #intersphinx_mapping = {'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None)}
 
 #extlinks = {'pandas':('http://pandas.pydata.org', None)}
