@@ -18,6 +18,7 @@ from pysan.core import(
     get_transitions,
     is_recurrent,
     get_entropy,
+    get_subsequences,
     get_ndistinct_subsequences,
     get_turbulence,
     get_complexity,
@@ -60,6 +61,11 @@ from pysan.multisequence import(
     get_statistics,
     get_routine_scores,
     get_dissimilarity,
+
+    get_optimal_distance,
+    get_levenshtein_distance,
+    get_hamming_distance,
+    get_combinatorial_distance,
 
     plot_sequences,
 

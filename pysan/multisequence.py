@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import pysan.core as pysan_core
-import itertools
+import itertools, math
 import numpy as np
 
 def generate_sequences(count, length, alphabet):
@@ -390,6 +390,140 @@ def get_dissimilarity(sequences, function):
 			scores[row,column] = float(score)
 	
 	return scores
+
+
+def get_optimal_distance(s1,s2, match = 0, mismatch = -1, gap = -1):
+	"""
+	Computes the optimal matching distance between two sequences using the `Needleman-Wunsch algorithm <https://www.sciencedirect.com/science/article/abs/pii/0022283670900574?via%3Dihub>`_ based on Devon Ryan's implementation found `here <https://www.biostars.org/p/231391/>`_.
+	
+	
+	Example
+	--------
+	>>> s1 = [1,1,1,1,2,2,2,2]
+	>>> s2 = [1,2,2,3,3,4,5,5]
+	>>> ps.get_optimal_distance(s1,s2)
+	7.0
+	
+	"""
+	
+	penalty = {'MATCH': match, 'MISMATCH': mismatch, 'GAP': gap} #A dictionary for all the penalty valuse.
+	n = len(s1) + 1 #The dimension of the matrix columns.
+	m = len(s2) + 1 #The dimension of the matrix rows.
+	al_mat = np.zeros((m,n),dtype = float) #Initializes the alighment matrix with zeros.
+	p_mat = np.zeros((m,n),dtype = str) #Initializes the pointer matrix with zeros.
+	#Scans all the first rows element in the matrix and fill it with "gap penalty"
+	for i in range(m):
+		al_mat[i][0] = penalty['GAP'] * i
+		p_mat[i][0] = 'V'
+	#Scans all the first columns element in the matrix and fill it with "gap penalty"
+	for j in range (n):
+		al_mat[0][j] = penalty['GAP'] * j
+		p_mat [0][j] = 'H'
+	
+	
+	#-------------------------------------------------------
+	#This function returns to values for cae of match or mismatch
+	def Diagonal(n1,n2,pt):
+		if(n1 == n2):
+			return pt['MATCH']
+		else:
+			return pt['MISMATCH']
+	
+	#------------------------------------------------------------   
+	#This function gets the optional elements of the aligment matrix and returns the elements for the pointers matrix.
+	def Pointers(di,ho,ve):
+		pointer = max(di,ho,ve) #based on python default maximum(return the first element).
+
+		if(di == pointer):
+			return 'D'
+		elif(ho == pointer):
+			return 'H'
+		else:
+			 return 'V'
+	
+	#Fill the matrix with the correct values.
+	p_mat [0][0] = 0 #Return the first element of the pointer matrix back to 0.
+	for i in range(1,m):
+		for j in range(1,n):
+			di = al_mat[i-1][j-1] + Diagonal(s1[j-1],s2[i-1],penalty) #The value for match/mismatch -  diagonal.
+			ho = al_mat[i][j-1] + penalty['GAP'] #The value for gap - horizontal.(from the left cell)
+			ve = al_mat[i-1][j] + penalty['GAP'] #The value for gap - vertical.(from the upper cell)
+			al_mat[i][j] = max(di,ho,ve) #Fill the matrix with the maximal value.(based on the python default maximum)
+			p_mat[i][j] = Pointers(di,ho,ve)
+	
+	#print(np.matrix(al_mat))
+	#print(np.matrix(p_mat))
+	
+	# optimal alignment score = bottom right value in al_mat
+	score = al_mat[m-1][n-1]
+	#print(score)
+	return -score
+
+def get_levenshtein_distance(s1,s2):
+	"""
+	Computes the `Levenshtein II distance <https://journals.sagepub.com/doi/abs/10.1177/0049124110362526>`_ between two sequences, which is the optimal distance using only insertions and deletions.
+	This is identical to the :meth:`get_optimal_distance` method with a mismatch cost of ~infinity (-9999999) and a gap cost of -1.
+	See the :meth:`get_optimal_distance` method with its default parameters for the Levenshtein I distance.
+	
+	Example
+	--------
+	>>> s1 = [1,1,1,1,2,2,2,2]
+	>>> s2 = [1,2,2,3,3,4,5,5]
+	>>> ps.get_levenshtein_distance(s1,s2)
+	10.0
+	
+	"""
+	return get_optimal_distance(s1,s2, match=0, mismatch=-9999999, gap=-1)
+
+def get_hamming_distance(s1,s2):
+	"""
+	Computes the Hamming distance  between two sequences, which is the optimal distance using only substitutions (no indels).
+	This is identical to the :meth:`get_optimal_distance` method with a mismatch cost of -1 and a gap cost of ~infinity (-999999).
+	Note that this can only be used on sequences of the same length given the infinite cost of gaps.
+	
+	Example
+	--------
+	>>> s1 = [1,1,1,1,2,2,2,2]
+	>>> s2 = [1,2,2,3,3,4,5,5]
+	>>> ps.get_hamming_distance(s1,s2)
+	7.0
+	
+	"""
+	if len(s1) != len(s2):
+		raise Exception('sequences provided are not equal length - cannot compute Hamming distance')
+	
+	return get_optimal_distance(s1,s2, match=0, mismatch=-1, gap=-999999)
+
+def get_combinatorial_distance(s1,s2):
+	"""
+	Computes the combinatorial distance between two sequences.
+	This is defined as 1 minus the number of common subsequences divided by the square root of the product of the number of subsequences in each sequence.
+	See page 149 in Social Sequence Analysis by Benjamin Cornwell for details.
+	
+	Example
+	--------
+	
+	>>> s1 = [1,2,3]
+	>>> s2 = [2,3,4]
+	>>> ps.get_combinatorial_distance(s1,s2)
+	0.5714285714285714
+	
+	"""
+	
+	s1_subs = pysan_core.get_subsequences(s1)
+	s2_subs = pysan_core.get_subsequences(s2)
+	
+	# parse to strings so that they can be easily compared
+	# - haven't tried it without, may be faster...
+	s1_subs_strings = [str(s) for s in s1_subs]
+	s2_subs_strings = [str(s) for s in s2_subs]
+	
+	common_subs = list(set(s1_subs_strings) & set(s2_subs_strings))
+	
+	bottom_fraction = math.sqrt(len(s1_subs) * len(s2_subs))
+	full_fraction = len(common_subs) / bottom_fraction
+	
+	return 1 - full_fraction
 
 # ============= MULTISEQUENCE PLOTTING ===============
 

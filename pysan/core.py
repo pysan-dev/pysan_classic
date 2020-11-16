@@ -9,6 +9,7 @@ import scipy.stats
 import math
 import statistics
 import pysan.multisequence as pysan_ms
+from itertools import combinations
 
 random.seed('12345')
 
@@ -340,6 +341,27 @@ def get_element_frequency(sequence):
 # ====================================================================================
 
 # NGRAMS
+
+def get_subsequences(sequence):
+	"""
+	Computes the actual possible subsequences in a given sequence, returning them as a list of lists.
+	Note that this does not include a single empty list as a subsequence.
+	This method is based on a similar implementation available `here <https://www.w3resource.com/python-exercises/list/python-data-type-list-exercise-33.php>`_.
+	
+	Example
+	--------
+	>>> sequence = [1,2,3]
+	>>> ps.get_subsequences(sequence)
+	[[1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]
+	
+	"""
+	
+	subsequences = []
+	for i in range(0, len(sequence)+1):
+		temp = [list(x) for x in combinations(sequence, i)]
+		if len(temp)>0:
+			subsequences.extend(temp)
+	return subsequences[1:]
 
 def get_ndistinct_subsequences(sequence):
 	"""
