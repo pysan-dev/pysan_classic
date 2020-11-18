@@ -30,12 +30,15 @@ Core Module
 		:meth:`get_element_frequency() <pysan.core.get_element_frequency>`
 
 
-.. container:: core_subsequence
+.. container:: core_top
 
-	.. csv-table:: Subsequence/Ngrams
+	.. csv-table:: Subsequences
 
 		:meth:`get_subsequences() <pysan.core.get_subsequences>`
 		:meth:`get_ndistinct_subsequences() <pysan.core.get_ndistinct_subsequences>`
+
+	.. csv-table:: N-grams
+
 		:meth:`get_all_ngrams() <pysan.core.get_all_ngrams>`
 		:meth:`get_unique_ngrams() <pysan.core.get_unique_ngrams>`
 		:meth:`get_ngram_counts() <pysan.core.get_ngram_counts>`
@@ -55,22 +58,34 @@ Core Module
 		:meth:`get_longest_spell() <pysan.core.get_longest_spell>`
 		:meth:`get_spell_durations() <pysan.core.get_spell_durations>`
 
+.. container:: plotting
+
+	.. csv-table:: Visualisation
+
+		:meth:`plot_sequence() <pysan.core.plot_sequence>` :meth:`plot_sequence_1d() <pysan.core.plot_sequence_1d>` :meth:`plot_element_counts() <pysan.core.plot_element_counts>` :meth:`plot_ngram_counts() <pysan.core.plot_ngram_counts>` :meth:`plot_transition_matrix() <pysan.core.plot_transition_matrix>`
+
 MultiSequence Module
 ++++++++++++++++++++++++
 `pysan <https://github.com/pysan-dev/pysan>`_'s multisequence module contains methods for exploring many sequences at the same time. This is useful for understanding how sequences vary within a population, and to look for common patterns or outliers. Many of the methods are wrappers of those in the `Core` module above for computing values across collections, see each description for details.
 
 
-.. container:: multi-top
+.. container:: core-top
 
 	.. csv-table:: Attributes
 
+		:meth:`are_recurrent() <pysan.multisequence.are_recurrent>`
+		:meth:`get_summary_statistic() <pysan.multisequence.get_summary_statistics>`
 		:meth:`get_synchrony() <pysan.multisequence.get_synchrony>`
+		:meth:`get_sequence_frequencies() <pysan.multisequence.get_sequence_frequencies>`
+
+	.. csv-table:: Derivative Sequences
+
 		:meth:`get_motif() <pysan.multisequence.get_motif>`
 		:meth:`get_modal_state() <pysan.multisequence.get_modal_state>`
 
 
 
-.. container:: multi-top
+.. container:: core-top
 
 	.. csv-table:: Edit Distances
 
@@ -78,20 +93,38 @@ MultiSequence Module
 		:meth:`get_hamming_distance() <pysan.multisequence.get_hamming_distance>`
 		:meth:`get_levenshtein_distance() <pysan.multisequence.get_levenshtein_distance>`
 
-	.. csv-table:: Non-alignment Techniques
+
+	.. csv-table:: Non-alignment Distances
 
 		:meth:`get_dt_coefficient() <pysan.multisequence.none>`
 		:meth:`get_combinatorial_distance() <pysan.multisequence.get_combinatorial_distance>`
 		:meth:`get_geometric_distance() <pysan.multisequence.none>`
+
+.. container:: core-top
+
+	.. csv-table:: Spell-Adjusted Distances
+
+		:meth:`get_dom_distance() <pysan.multisequence.none>`
+		:meth:`get_lom_distance() <pysan.multisequence.none>`
+		:meth:`get_twe_distance() <pysan.multisequence.none>`
+
 
 	.. csv-table:: Whole Sequence Comparison
 
-		:meth:`get_dt_coefficient() <pysan.multisequence.none>`
-		:meth:`get_combinatorial_distance() <pysan.multisequence.get_combinatorial_distance>`
-		:meth:`get_geometric_distance() <pysan.multisequence.none>`
+		:meth:`get_dissimilarity_matrix() <pysan.multisequence.get_dissimilarity_matrix>`
+		:meth:`get_heirarchical_clustering() <pysan.multisequence.get_heirarchical_clustering>`
+		:meth:`get_ch_index() <pysan.multisequence.get_ch_index>`
 
 
-Example
+.. container:: plotting
+
+	.. csv-table:: Visualisation
+
+		:meth:`plot_common_ngrams() <pysan.multisequence.plot_common_ngrams>` :meth:`plot_sequences() <pysan.multisequence.plot_sequences>` :meth:`plot_state_distribution() <pysan.multisequence.plot_state_distribution>` :meth:`plot_sequence_frequencies() <pysan.multisequence.plot_sequence_frequencies>` :meth:`plot_transition_frequencies() <pysan.multisequence.plot_transition_frequencies>` :meth:`plot_mean_occurance() <pysan.multisequence.plot_mean_occurance>` :meth:`plot_modal_state() <pysan.multisequence.plot_modal_state>` :meth:`plot_dendrogram() <pysan.multisequence.plot_dendrogram>`
+
+
+
+Documentation
 ++++++++++++++++++++++++
 
 
@@ -103,3 +136,4 @@ Example
 .. automodule:: pysan.multisequence
 	:members:
 	:undoc-members:
+	:member-order: bysource

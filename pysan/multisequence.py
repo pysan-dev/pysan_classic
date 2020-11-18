@@ -2,6 +2,11 @@ import matplotlib.pyplot as plt
 import pysan.core as pysan_core
 import itertools, math
 import numpy as np
+import pandas as pd
+from sklearn import cluster
+import scipy
+
+
 
 def generate_sequences(count, length, alphabet):
 	"""
@@ -23,6 +28,55 @@ def generate_sequences(count, length, alphabet):
 		sequences.append(pysan_core.generate_sequence(length, alphabet))
 	
 	return sequences
+
+
+
+# ===== ELEMENTS =====
+
+def get_global_alphabet(sequences):
+	"""
+	Computes the alphabet across all sequences in a collection.
+
+	Example
+	---------
+	>>> s1 = [1,1,1,2,2,2]
+	>>> s2 = [1,1,2,2,3,3]
+	>>> sequences = [s1,s2]
+	>>> ps.get_global_alphabet(sequences)
+	[1, 2, 3]
+
+	"""
+	
+	alphabets = [pysan_core.get_alphabet(s) for s in sequences]
+	
+	global_alphabet = sorted(list(set([item for sublist in alphabets for item in sublist])))
+	
+	return global_alphabet
+
+def get_all_element_counts(sequences):
+	"""
+	UC Counts the number of occurances of each element across a collection of sequences.
+	"""
+
+	pass
+
+def get_all_element_frequencies(sequences):
+	"""
+	UC Computes the frequencies of each element across a collection of sequences.
+	"""
+
+	pass
+
+def get_first_position_reports(sequences):
+	"""
+	UC Reports the positions of each first occurance of each element across a collection of sequences.
+	"""
+
+	pass
+
+
+
+# ===== NGRAM METHODS =====
 
 def get_common_ngrams(sequences, ngram_length):
 	"""
@@ -61,78 +115,6 @@ def get_common_ngrams(sequences, ngram_length):
 				del found_ngrams[key]
 	return found_ngrams
 
-def get_all_spells(sequences):
-	"""
-	UC Computes spells across a collection of sequences, returning a list of tuples where each tuple holds the element, the length of the spell, and the number of occurances in the collection.
-	"""
-	
-	all_spells = []
-	for sequence in sequences:
-		spells = ps.get_spells(sequence)
-		
-	pass
-
-def get_longest_spells(sequences):
-	"""
-	UC Extracts the longest spell for each sequence in a collection, returning the element, count, and starting position for each of the spells.
-
-	"""
-
-	pass
-
-def are_recurrent(sequences):
-	"""
-	Returns false if all sequences in a given collection are recurrant, true otherwise.
-	
-	Example
-	---------
-	>>> s1 = [1,2,3,4]
-	>>> s2 = [3,2,4,5]
-	>>> s3 = [2,3,4,1]
-	>>> sequences = [s1,s2,s3]
-	>>> ps.are_recurrent(sequences)
-	False
-
-	"""
-
-	for sequence in sequences:
-		if pysan_core.is_recurrent(sequence):
-			return True
-	
-	return False
-
-def get_first_position_reports(sequences):
-	"""
-	UC Reports the positions of each first occurance of each element across a collection of sequences.
-	"""
-
-	pass
-
-def get_all_ntransitions(sequences):
-	"""
-	UC Returns a list containing the number of transactions in each sequence in a collection.
-	"""
-
-	pass
-
-
-def get_statistics(sequence, function):
-	"""
-	UC Computes a summary statistic (e.g. entropy, complexity, or turbulence) for each sequence in a collection.
-
-	"""
-
-	pass
-
-
-
-def get_routine_scores(sequences):
-	"""
-	UC Returns a list containing the routine scores for each sequence in a collection using :meth:`get_routine() <pysan.core.get_routine>`.
-	"""
-
-	pass
-
 def get_all_unique_ngrams(sequences ,n):
 	"""
 	UC Creates a list of all unique ngrams in a collection of sequences.
@@ -154,104 +136,9 @@ def get_all_ngram_counts(sequences, n):
 
 	pass
 
-def get_all_element_counts(sequences):
-	"""
-	UC Counts the number of occurances of each element across a collection of sequences.
-	"""
-
-	pass
-
-def get_all_element_frequencies(sequences):
-	"""
-	UC Computes the frequencies of each element across a collection of sequences.
-	"""
-
-	pass
-
-def get_modal_state(sequences):
-	"""
-	Computes the modal states for each position in a collection of sequences, returning a sequence of tuples containing the modal element and its number of occurances at that position.
-
-	Example
-	--------
-	>>> s1 = [1,1,1,2,2,3,3]
-	>>> s2 = [1,2,2,2,2,3,3]
-	>>> s3 = [1,1,1,1,2,2,3]
-	>>> sequences = [s1,s2,s3]
-	>>> ps.get_modal_state(sequences)
-	[(1, 3), (1, 2), (1, 2), (2, 2), (2, 3), (3, 2), (3, 3)]
 
 
-	"""
-
-	longest_sequence = max([len(s) for s in sequences])
-	
-	modal_elements = []
-	for position in range(longest_sequence):
-		
-		elements_at_this_position = []
-		for sequence in sequences:
-			try:
-				elements_at_this_position.append(sequence[position])
-			except:
-				continue
-		
-		# this line leaves multi-modal position behaviour undefined
-		modal_element = max(set(elements_at_this_position), key=elements_at_this_position.count)
-		
-		modal_elements.append((modal_element, elements_at_this_position.count(modal_element)))
-	
-	return modal_elements
-
-def get_sequence_frequencies(sequences):
-	"""
-	Computes the frequencies of different sequences in a collection, returning a dictionary of their string representations and counts.
-	
-	Example
-	--------
-	
-	.. plot::
-	
-		>>> s1 = [1,1,2,2,3]
-		>>> s2 = [1,2,2,3,3]
-		>>> s3 = [1,1,2,2,2]
-		>>> sequences = [s1,s2,s2,s3,s3,s3]
-		>>> ps.get_sequence_frequencies(sequences) #doctest: +NORMALIZE_WHITESPACE
-		{'[1, 1, 2, 2, 2]': 3, 
-		 '[1, 2, 2, 3, 3]': 2, 
-		 '[1, 1, 2, 2, 3]': 1}
-	"""
-	
-	# converting to strings makes comparison easy
-	sequences_as_strings = [str(s) for s in sequences]
-	
-	sequence_frequencies = {}
-	for sequence in set(sequences_as_strings):
-		sequence_frequencies[sequence] = sequences_as_strings.count(sequence)
-	
-	sequence_frequencies = {k: v for k, v in sorted(sequence_frequencies.items(), key=lambda item: item[1], reverse=True)}
-	
-	return sequence_frequencies
-
-def get_global_alphabet(sequences):
-	"""
-	Computes the alphabet across all sequences in a collection.
-
-	Example
-	---------
-	>>> s1 = [1,1,1,2,2,2]
-	>>> s2 = [1,1,2,2,3,3]
-	>>> sequences = [s1,s2]
-	>>> ps.get_global_alphabet(sequences)
-	[1, 2, 3]
-
-	"""
-	
-	alphabets = [pysan_core.get_alphabet(s) for s in sequences]
-	
-	global_alphabet = sorted(list(set([item for sublist in alphabets for item in sublist])))
-	
-	return global_alphabet
+# ===== TRANSITIONS =====
 
 def get_transition_frequencies(sequences):
 	"""
@@ -297,6 +184,137 @@ def get_all_transitions_matrix(sequences):
 
 	pass
 
+def get_all_ntransitions(sequences):
+	"""
+	UC Returns a list containing the number of transactions in each sequence in a collection.
+	"""
+
+	pass
+
+
+
+# ===== SPELLS =====
+
+def get_all_spells(sequences):
+	"""
+	UC Computes spells across a collection of sequences, returning a list of tuples where each tuple holds the element, the length of the spell, and the number of occurances in the collection.
+	"""
+	
+	all_spells = []
+	for sequence in sequences:
+		spells = ps.get_spells(sequence)
+		
+	pass
+
+def get_longest_spells(sequences):
+	"""
+	UC Extracts the longest spell for each sequence in a collection, returning the element, count, and starting position for each of the spells.
+
+	"""
+
+	pass
+
+
+
+# ===== COLLECTION ATTRIBUTES =====
+
+def are_recurrent(sequences):
+	"""
+	Returns true if any of the sequences in a given collection are recurrant, false otherwise.
+	
+	Example
+	---------
+	>>> s1 = [1,2,3,4]
+	>>> s2 = [3,2,4,5]
+	>>> s3 = [2,3,4,1]
+	>>> sequences = [s1,s2,s3]
+	>>> ps.are_recurrent(sequences)
+	False
+
+	"""
+
+	for sequence in sequences:
+		if pysan_core.is_recurrent(sequence):
+			return True
+	
+	return False
+
+def get_summary_statistic(sequence, function):
+	"""
+	UC Computes a summary statistic (e.g. entropy, complexity, or turbulence) for each sequence in a collection, returning the results as a list.
+
+	"""
+
+	pass
+
+def get_routine_scores(sequences, duration):
+	"""
+	UC Returns a list containing the routine scores for each sequence in a collection using :meth:`get_routine() <pysan.core.get_routine>`.
+	"""
+
+	pass
+
+def get_synchrony(sequences):
+	"""
+	Computes the normalised synchrony between a two or more sequences. 
+	Synchrony here refers to positions with identical elements, e.g. two identical sequences have a synchrony of 1, two completely different sequences have a synchrony of 0.
+	The value is normalised by dividing by the number of positions compared.
+	This computation is defined in Cornwell's 2015 book on social sequence analysis, page 230.
+	
+	Example
+	--------
+	>>> s1 = [1,1,2,2,3]
+	>>> s2 = [1,2,2,3,3]
+	>>> sequences = [s1,s2]
+	>>> ps.get_synchrony(sequences)
+	0.6
+	
+	"""
+	
+	shortest_sequence = min([len(s) for s in sequences])
+	
+	same_elements = []
+	for position in range(shortest_sequence):
+	
+		elements_at_this_position = []
+		for sequence in sequences:
+			elements_at_this_position.append(sequence[position])
+			
+		same_elements.append(elements_at_this_position.count(elements_at_this_position[0]) == len(elements_at_this_position))
+		
+	return same_elements.count(True) / shortest_sequence
+
+def get_sequence_frequencies(sequences):
+	"""
+	Computes the frequencies of different sequences in a collection, returning a dictionary of their string representations and counts.
+	
+	Example
+	--------
+	>>> s1 = [1,1,2,2,3]
+	>>> s2 = [1,2,2,3,3]
+	>>> s3 = [1,1,2,2,2]
+	>>> sequences = [s1,s2,s2,s3,s3,s3]
+	>>> ps.get_sequence_frequencies(sequences) #doctest: +NORMALIZE_WHITESPACE
+	{'[1, 1, 2, 2, 2]': 3, 
+	 '[1, 2, 2, 3, 3]': 2, 
+	 '[1, 1, 2, 2, 3]': 1}
+	"""
+	
+	# converting to strings makes comparison easy
+	sequences_as_strings = [str(s) for s in sequences]
+	
+	sequence_frequencies = {}
+	for sequence in set(sequences_as_strings):
+		sequence_frequencies[sequence] = sequences_as_strings.count(sequence)
+	
+	sequence_frequencies = {k: v for k, v in sorted(sequence_frequencies.items(), key=lambda item: item[1], reverse=True)}
+	
+	return sequence_frequencies
+
+
+
+# ===== DERIVATIVE SEQUENCES =====
+
 def get_motif(sequences):
 	"""
 	Computes the motif for a given collection of sequences.
@@ -331,66 +349,44 @@ def get_motif(sequences):
 	
 	return same_elements
 
-def get_synchrony(sequences):
+def get_modal_state(sequences):
 	"""
-	Computes the normalised synchrony between a two or more sequences. 
-	Synchrony here refers to positions with identical elements, e.g. two identical sequences have a synchrony of 1, two completely different sequences have a synchrony of 0.
-	The value is normalised by dividing by the number of positions compared.
-	This computation is defined in Cornwell's 2015 book on social sequence analysis, page 230.
-	
+	Computes the modal states for each position in a collection of sequences, returning a sequence of tuples containing the modal element and its number of occurances at that position.
+
 	Example
 	--------
-	>>> s1 = [1,1,2,2,3]
-	>>> s2 = [1,2,2,3,3]
-	>>> sequences = [s1,s2]
-	>>> ps.get_synchrony(sequences)
-	0.6
-	
+	>>> s1 = [1,1,1,2,2,3,3]
+	>>> s2 = [1,2,2,2,2,3,3]
+	>>> s3 = [1,1,1,1,2,2,3]
+	>>> sequences = [s1,s2,s3]
+	>>> ps.get_modal_state(sequences)
+	[(1, 3), (1, 2), (1, 2), (2, 2), (2, 3), (3, 2), (3, 3)]
+
+
 	"""
+
+	longest_sequence = max([len(s) for s in sequences])
 	
-	shortest_sequence = min([len(s) for s in sequences])
-	
-	same_elements = []
-	for position in range(shortest_sequence):
-	
+	modal_elements = []
+	for position in range(longest_sequence):
+		
 		elements_at_this_position = []
 		for sequence in sequences:
-			elements_at_this_position.append(sequence[position])
-			
-		same_elements.append(elements_at_this_position.count(elements_at_this_position[0]) == len(elements_at_this_position))
+			try:
+				elements_at_this_position.append(sequence[position])
+			except:
+				continue
 		
-	return same_elements.count(True) / shortest_sequence
+		# this line leaves multi-modal position behaviour undefined
+		modal_element = max(set(elements_at_this_position), key=elements_at_this_position.count)
+		
+		modal_elements.append((modal_element, elements_at_this_position.count(modal_element)))
+	
+	return modal_elements
 
-def get_dissimilarity(sequences, function):
-	"""
-	Computes a dissimilarity matrix using a given function.
-	This function is applied pairwise between all sequences in the collection provided.
-	This function can be used abstractly for all kinds of pairwise measures.
-	
-	Example
-	---------
-	>>> s1 = [1,1,2,2,3]
-	>>> s2 = [1,2,2,3,3]
-	>>> s3 = [1,1,2,2,2]
-	>>> sequences = [s1,s2,s3]
-	>>> ps.get_dissimilarity(sequences, ps.get_synchrony) #doctest: +NORMALIZE_WHITESPACE
-	array([[1. , 0.6, 0.8],
-       	   [0.6, 1. , 0.4],
-           [0.8, 0.4, 1. ]])
-	
-	"""
-	
-	num_sequences = len(sequences)
-	scores = np.zeros((num_sequences,num_sequences),dtype = float)
-	
-	
-	for row in range(num_sequences):
-		for column in range(num_sequences):
-			score = function([sequences[row], sequences[column]])
-			scores[row,column] = float(score)
-	
-	return scores
 
+
+# ===== EDIT DISTANCES =====
 
 def get_optimal_distance(s1,s2, match = 0, mismatch = -1, gap = -1):
 	"""
@@ -457,6 +453,9 @@ def get_optimal_distance(s1,s2, match = 0, mismatch = -1, gap = -1):
 	# optimal alignment score = bottom right value in al_mat
 	score = al_mat[m-1][n-1]
 	#print(score)
+	if score == 0: # fixes -0 bug for completeness
+		return 0
+
 	return -score
 
 def get_levenshtein_distance(s1,s2):
@@ -524,6 +523,65 @@ def get_combinatorial_distance(s1,s2):
 	full_fraction = len(common_subs) / bottom_fraction
 	
 	return 1 - full_fraction
+
+
+
+# ===== WHOLE SEQUENCE COMPARISON =====
+
+def get_dissimilarity_matrix(sequences, function):
+	"""
+	Computes a dissimilarity matrix using a given function.
+	This function can be a measure of dissimilarity, distance, or any other measurement between two sequences.
+	The column names and index on the matrix are the indexes of each sequences in the collection.
+	
+	Example
+	----------
+	>>> s1 = [1,1,1,2,2,3,3,3]
+	>>> s2 = [1,1,3,2,2,3,1,3]
+	>>> s3 = [1,1,2,2,3,2,3,2]
+	>>> sequences = [s1,s2,s3]
+	>>> ps.get_dissimilarity_matrix(sequences, ps.get_optimal_distance) #doctest: +NORMALIZE_WHITESPACE
+	 	0 	1 	2
+	0 	0.0 	2.0 	3.0
+	1 	2.0 	0.0 	3.0
+	2 	3.0 	3.0 	0.0
+	"""
+	
+	matrix = np.zeros((len(sequences), len(sequences)))
+	for x, row in enumerate(sequences):
+		for y, column, in enumerate(sequences):
+			matrix[x][y] = function(row, column)
+			
+	df = pd.DataFrame(matrix, columns=range(len(sequences)), index=range(len(sequences)))
+	
+	return df
+
+def get_heirarchical_clustering(sequences, function):
+	"""
+	Fits an `sklearn agglomerative clustering model <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html>`_ using the 'average' linkage criteria.
+	The source code for this method is only two lines, so please copy to your own script to modify specific clustering parameters!
+	
+	Example
+	---------
+	
+	
+	AgglomerativeClustering(affinity='precomputed', distance_threshold=0,
+                        linkage='average', n_clusters=None)
+	"""
+
+	matrix = get_dissimilarity_matrix(sequences, function)
+
+	model = cluster.AgglomerativeClustering(affinity='precomputed', linkage='average', distance_threshold=0, n_clusters=None).fit(matrix)
+
+	return model
+
+def get_ch_index(model):
+	"""
+	UC Computes the Calinski-Harabasz index
+	"""
+	pass
+
+
 
 # ============= MULTISEQUENCE PLOTTING ===============
 
@@ -838,3 +896,41 @@ def plot_entropy(sequences):
 	plt.ylabel('Normalised Entropy, e')
 
 	return plt
+
+
+def plot_dendrogram(model, **kwargs):
+	"""
+	Plots a heirarchical clustering model - example taken from the sklearn library's `example available here <https://scikit-learn.org/stable/auto_examples/cluster/plot_agglomerative_dendrogram.html#sphx-glr-auto-examples-cluster-plot-agglomerative-dendrogram-py>`_
+	
+	Example
+	----------
+	.. plot::
+
+		>>> s1 = [1,1,1,2,2,3,2,4,4,3,2,1,2,3,3,3,2,2,1,1,1]
+		>>> s2 = [1,1,2,2,3,2,4,4,3,2,1,2,3,2,2,2,3,3,2,4,4]
+		>>> s3 = [2,2,1,1,2,3,2,4,4,3,2,1,2,3,3,3,4,4,4,3,4]
+		>>> s4 = [1,1,1,1,2,3,2,3,3,3,3,1,2,2,3,3,3,4,4,4,3]
+		>>> sequences = [s1,s2,s3,s4]
+		>>> model = ps.get_heirarchical_clustering(sequences, ps.get_optimal_distance)
+		>>> ps.plot_dendrogram(model) #doctest: +SKIP
+
+	"""
+
+	# Create linkage matrix and then plot the dendrogram
+	# create the counts of samples under each node
+	counts = np.zeros(model.children_.shape[0])
+	n_samples = len(model.labels_)
+	for i, merge in enumerate(model.children_):
+		current_count = 0
+		for child_idx in merge:
+			if child_idx < n_samples:
+				current_count += 1  # leaf node
+			else:
+				current_count += counts[child_idx - n_samples]
+		counts[i] = current_count
+
+	linkage_matrix = np.column_stack([model.children_, model.distances_, counts]).astype(float)
+
+	plot = scipy.cluster.hierarchy.dendrogram(linkage_matrix, **kwargs)
+
+	return plot

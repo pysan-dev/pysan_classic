@@ -58,14 +58,18 @@ from pysan.multisequence import(
     get_motif,
     get_modal_state,
     get_synchrony,
-    get_statistics,
+    get_summary_statistic,
     get_routine_scores,
-    get_dissimilarity,
+    get_dissimilarity_matrix,
 
     get_optimal_distance,
     get_levenshtein_distance,
     get_hamming_distance,
     get_combinatorial_distance,
+
+
+    get_heirarchical_clustering,
+
 
     plot_sequences,
 
@@ -78,6 +82,7 @@ from pysan.multisequence import(
     plot_mean_occurance,
     plot_modal_state,
     plot_entropy,
-
+    
+    plot_dendrogram
     )
 
