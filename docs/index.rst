@@ -8,7 +8,7 @@
 	:twitter\:card: summary_large_image
 	:twitter\:site: @ojscholten
 	:twitter\:title: pysan\: Sequence Analysis in Python
-	:twitter\:description: The pysan library is a free and open source collection of methods for doing sequence analysis. Get started now 
+	:twitter\:description: The pysan library is a free and open source collection of methods for doing sequence analysis. Get started now by clicking this link and reading through example analyses and the user guide!
 	:twitter\:image: https://pysan.org/pysan.png
 
 .. container:: notice
