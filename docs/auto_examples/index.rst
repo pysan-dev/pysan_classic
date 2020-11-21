@@ -7,13 +7,81 @@
 Gallery
 =================
 
-This page is a gallery of worked examples which complement the examples in the documentation.
-If you're starting a research project, or want to see how sequence analysis may fit into your existing study, then click through a few of these examples for inspiration.
+This page is a gallery of worked examples which complement those in the documentation and user guide.
+If you're starting a research project, or want to see how sequence analysis may fit into your existing study, then click through a few of these examples for inspiration!
+
+
+
+
+
 
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This is a very simple example of plotting a sequence using the pysan.core.plot_sequence method.">
+    <div class="sphx-glr-thumbcontainer" tooltip=" Objective ------------ write objective here">
+
+.. only:: html
+
+ .. figure:: /auto_examples/images/thumb/sphx_glr_plot_sequence_distribution_thumb.png
+     :alt: Create a sequence distribution plot
+
+     :ref:`sphx_glr_auto_examples_plot_sequence_distribution.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/plot_sequence_distribution
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip=" Objective ------------ write objective here">
+
+.. only:: html
+
+ .. figure:: /auto_examples/images/thumb/sphx_glr_plot_summary_statistics_thumb.png
+     :alt: Explore summary statistics across a collection
+
+     :ref:`sphx_glr_auto_examples_plot_summary_statistics.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/plot_summary_statistics
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Objective ------------ write objective here">
+
+.. only:: html
+
+ .. figure:: /auto_examples/images/thumb/sphx_glr_plot_heirarchical_clustering_thumb.png
+     :alt: Apply Agglomerative clustering to a collection of sequences
+
+     :ref:`sphx_glr_auto_examples_plot_heirarchical_clustering.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/plot_heirarchical_clustering
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Objective ------------ You have a single sequence of events which you would like to plot.  You&#x27;...">
 
 .. only:: html
 

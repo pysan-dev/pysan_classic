@@ -239,6 +239,7 @@ def get_routine(sequence, duration):
 	Note that this routine measure is identical to the multisequence measure of synchrony, but applied within-sequence in duration length chunks.
 	
 	Example
+	---------
 	>>> sequence = [1,1,2,2,3,1,1,2,3,2,1,1,3,2,2]
 	>>> ps.get_routine(sequence, 5)
 	0.4
@@ -837,7 +838,7 @@ def color_matrix(matrix, cmap='summer'):
 	Parameters
 	-----------
 	matrix: DataFrame
-		A 2D matrix of values in the form of a :pandas: dataframe. Column names are used as axis ticks.
+		A 2D matrix of values in the form of a `pandas dataframe <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_. Column names are used as axis ticks.
 	cmap: string
 		The name of a `matplotlib color map <https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html>`_.
 	

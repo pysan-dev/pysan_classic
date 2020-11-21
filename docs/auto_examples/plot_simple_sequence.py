@@ -1,9 +1,19 @@
-
 """
 Simple Sequence Plot
-===========================
+==================================================
+
+Objective
+------------
+You have a single sequence of events which you would like to plot. 
+You've also seen some of the example plots in the documentation and don't like their style.
+Create and customise a plot that clearly shows each state over time, with a grid and position markers.
+
+ 
+Solution
+----------
 
 This is a very simple example of plotting a sequence using the :meth:`plot_sequence() <pysan.core.plot_sequence>` method.
+
 """
 
 import pysan as ps

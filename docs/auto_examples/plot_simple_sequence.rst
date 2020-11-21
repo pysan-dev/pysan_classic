@@ -10,7 +10,17 @@
 
 
 Simple Sequence Plot
-===========================
+==================================================
+
+Objective
+------------
+You have a single sequence of events which you would like to plot. 
+You've also seen some of the example plots in the documentation and don't like their style.
+Create and customise a plot that clearly shows each state over time, with a grid and position markers.
+
+ 
+Solution
+----------
 
 This is a very simple example of plotting a sequence using the :meth:`plot_sequence() <pysan.core.plot_sequence>` method.
 
@@ -70,7 +80,7 @@ For a quick guide on customisation using matplotlib I recommend `this earthdatas
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.117 seconds)
+   **Total running time of the script:** ( 0 minutes  0.094 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_simple_sequence.py:

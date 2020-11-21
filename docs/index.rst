@@ -7,9 +7,9 @@
 .. meta::
 	:twitter\:card: summary_large_image
 	:twitter\:site: @ojscholten
-	:twitter\:title: pysan\: Sequence Analysis in Python
+	:twitter\:title: pysan\: built for research
 	:twitter\:description: The pysan library is a free and open source collection of methods for doing sequence analysis. Get started now by clicking this link and reading through example analyses and the user guide!
-	:twitter\:image: https://pysan.org/pysan.png
+	:twitter\:image: https://pysan.org/_static/pysan.png
 
 .. container:: notice
 
@@ -23,9 +23,7 @@ Welcome
 
 .. container:: guide
 
-	.. image:: _templates/within_sequence_capabilities.png
-
-	.. image:: _templates/multisequence_capabilities.png
+	.. image:: _static/banner.png
 
 
 Read through the user guide and the API reference using the links below to get started, after installing it using one of the commands at the bottom of this page.
@@ -66,4 +64,4 @@ The pysan library contains methods for visualising, comparing, and dissecting se
 **Why Python?** - Python is quickly becoming *the* go-to language for data analysis across a number of research areas.
 By writing a sequence analysis library in Python, analysts can take advantage of other tools written in Python, whilst writing simple and readable code.
 
-To find out more about sequence analysis using pysan, continue reading down this page, starting with how to install the latest version from PyPI.
+Get started by clicking through the links above, and installing the library using the pip command or cloning the repository.

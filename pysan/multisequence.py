@@ -712,8 +712,9 @@ def plot_state_distribution(sequences):
 
 	plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 	plt.xlim(0, longest_sequence)
+	plt.ylim(0,1)
 
-	plt.ylabel('Frequency (n=' + str(len(sequence)) + ')')
+	plt.ylabel('Frequency (n=' + str(len(sequences)) + ')')
 	plt.xlabel('Position')
 
 	return plt
@@ -900,7 +901,7 @@ def plot_entropy(sequences):
 
 def plot_dendrogram(model, **kwargs):
 	"""
-	Plots a heirarchical clustering model - example taken from the sklearn library's `example available here <https://scikit-learn.org/stable/auto_examples/cluster/plot_agglomerative_dendrogram.html#sphx-glr-auto-examples-cluster-plot-agglomerative-dendrogram-py>`_
+	Plots a heirarchical clustering model - example taken from the `sklearn library <https://scikit-learn.org/stable/auto_examples/cluster/plot_agglomerative_dendrogram.html#sphx-glr-auto-examples-cluster-plot-agglomerative-dendrogram-py>`_
 	
 	Example
 	----------
